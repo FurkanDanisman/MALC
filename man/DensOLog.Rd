@@ -18,7 +18,7 @@ pdensolog(object, q, smooth = NULL, length_grid = 1001)
 
 qdensolog(object, p, smooth = NULL, length_grid = 1001)
 
-mean_densolog(object, smooth = NULL, length_grid = 1001)
+mean_densolog(object)
 
 evaluate_DensOLog(object, x, smooth = NULL)
 
@@ -46,10 +46,8 @@ Plot(object, ...)
 }
 \value{
 \code{DensOLog()} returns a fitted \code{DensOLog} object. Evaluation functions
-return numeric vectors. With \code{smooth = FALSE}, \code{mean_densolog()}
-returns the EM-step mean estimate stored in the fitted object. With
-\code{smooth = TRUE}, it returns the numerical mean of the smoothed fitted
-density.
+return numeric vectors. \code{mean_densolog()} returns the EM-step mean estimate
+stored in the fitted object.
 }
 \description{
 Fit DensOLog from observed bin frequencies and evaluate density, distribution,
