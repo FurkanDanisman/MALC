@@ -5,6 +5,108 @@ This repository provides code to run DensOLog and compare it against **three bas
 
 ---
 
+## Installation
+
+The package is currently available from the GitHub development branch:
+
+```r
+install.packages("remotes")
+remotes::install_github("FurkanDanisman/DensOLog", ref = "package-format")
+```
+
+After installation:
+
+```r
+library(DensOLog)
+```
+
+The package is not yet on CRAN, so this will not work until a CRAN release is available:
+
+```r
+install.packages("DensOLog")
+```
+
+---
+
+## Basic Usage
+
+The package API uses observed bin frequencies and grid breaks. The main fitting function does not take raw observations.
+
+```r
+library(DensOLog)
+
+counts <- c(2, 6, 12, 20, 12, 6, 2)
+grid <- seq(-3.5, 3.5, length.out = length(counts) + 1)
+
+fit <- DensOLog(counts, grid)
+```
+
+Here, `counts[j]` is the observed frequency in the interval
+`[grid[j], grid[j + 1])`, with the usual convention that the final bin includes
+the right endpoint.
+
+Evaluate the fitted density, CDF, quantiles, and EM-step mean:
+
+```r
+x <- seq(min(grid), max(grid), length.out = 200)
+
+dhat <- ddensolog(fit, x)
+phat <- pdensolog(fit, c(-1, 0, 1))
+qhat <- qdensolog(fit, c(0.25, 0.5, 0.75))
+mhat <- mean_densolog(fit)
+```
+
+Plot the fitted density:
+
+```r
+Plot(fit)
+```
+
+To fit the smoothed version, set `smooth = TRUE` when fitting. Downstream
+functions automatically follow the smoothing choice stored in the fitted object.
+
+```r
+fit_s <- DensOLog(counts, grid, smooth = TRUE)
+
+ddensolog(fit_s, x)
+pdensolog(fit_s, c(-1, 0, 1))
+qdensolog(fit_s, c(0.25, 0.5, 0.75))
+Plot(fit_s)
+```
+
+`mean_densolog()` returns the EM-step mean estimate and is independent of the
+smoothing choice.
+
+---
+
+## Comparison Methods
+
+The package also includes the three comparison methods used in the simulation
+study. All use the same `counts, grid` input format.
+
+```r
+bk <- BK2002(counts, grid)
+bn <- BinnedNP(counts, grid)
+ks <- KernSmooth(counts, grid)
+
+evaluate_BK2002(bk, x)
+evaluate_BinnedNP(bn, x)
+evaluate_KernSmooth(ks, x)
+```
+
+Numerical L2 errors can be computed against a known density:
+
+```r
+true_pdf <- function(z) dnorm(z)
+
+L2_DensOLog(counts, grid, true_pdf)
+L2_BK2002(counts, grid, true_pdf)
+L2_BinnedNP(counts, grid, true_pdf)
+L2_KernSmooth(counts, grid, true_pdf)
+```
+
+---
+
 ## What’s in this repo
 
 1. DensOLog and three baseline (KernSmooth, binnednp, NKDEBD) algorithms.
