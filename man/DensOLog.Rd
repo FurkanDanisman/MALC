@@ -4,7 +4,6 @@
 \alias{pdensolog}
 \alias{qdensolog}
 \alias{mean_densolog}
-\alias{evaluate_DensOLog}
 \alias{Plot}
 \alias{plot.DensOLog}
 \title{Fit and evaluate DensOLog}
@@ -19,8 +18,6 @@ pdensolog(object, q, length_grid = 1001)
 qdensolog(object, p, length_grid = 1001)
 
 mean_densolog(object)
-
-evaluate_DensOLog(object, x)
 
 Plot(object, ...)
 

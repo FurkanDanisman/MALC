@@ -118,15 +118,17 @@ BK2002 <- function(counts, grid, h = NULL, bw_B = 50, bw_seed = 1,
   )
 }
 
-evaluate_BK2002 <- function(object, x) {
+.density_BK2002 <- function(object, x) {
   if (!inherits(object, "BK2002")) {
     stop("object must be a BK2002 fit.", call. = FALSE)
   }
   stats::approx(object$x, object$fhat, xout = x, rule = 2)$y
 }
 
-BinnedNP <- function(counts, grid, seed_start = 1L, max_tries = 200L) {
+BinnedNP <- function(counts, grid, bandwidth = c("boot", "plugin"),
+                     seed_start = 1L, max_tries = 200L) {
   .check_counts_grid(counts, grid)
+  bandwidth <- match.arg(bandwidth)
   counts <- as.integer(round(counts))
   n <- sum(counts)
   w <- counts / n
@@ -154,17 +156,23 @@ BinnedNP <- function(counts, grid, seed_start = 1L, max_tries = 200L) {
   }
 
   structure(
-    list(counts = counts, grid = grid, weights = w, mids = .left_centers(grid), bw = bw),
+    list(
+      counts = counts,
+      grid = grid,
+      weights = w,
+      mids = .left_centers(grid),
+      bw = bw,
+      bandwidth = bandwidth
+    ),
     class = "BinnedNP"
   )
 }
 
-evaluate_BinnedNP <- function(object, x, bandwidth = c("boot", "plugin")) {
+.density_BinnedNP <- function(object, x) {
   if (!inherits(object, "BinnedNP")) {
     stop("object must be a BinnedNP fit.", call. = FALSE)
   }
-  bandwidth <- match.arg(bandwidth)
-  h <- if (bandwidth == "boot") object$bw$h_boot else object$bw$h_plugin
+  h <- if (object$bandwidth == "boot") object$bw$h_boot else object$bw$h_plugin
   vapply(
     x,
     function(xx) sum(object$weights * stats::dnorm((xx - object$mids) / h)) / h,
@@ -228,9 +236,46 @@ KernSmooth <- function(counts, grid, seed = 1, scalest = "minim",
   )
 }
 
-evaluate_KernSmooth <- function(object, x) {
+.density_KernSmooth <- function(object, x) {
   if (!inherits(object, "DensOLogKernSmooth")) {
     stop("object must be a KernSmooth fit returned by DensOLog::KernSmooth().", call. = FALSE)
   }
   stats::approx(object$x, object$fhat, xout = x, rule = 2)$y
+}
+
+.is_kernel_fit <- function(object) {
+  inherits(object, "BK2002") ||
+    inherits(object, "BinnedNP") ||
+    inherits(object, "DensOLogKernSmooth")
+}
+
+.density_kernel <- function(object, x) {
+  if (inherits(object, "BK2002")) {
+    .density_BK2002(object, x)
+  } else if (inherits(object, "BinnedNP")) {
+    .density_BinnedNP(object, x)
+  } else if (inherits(object, "DensOLogKernSmooth")) {
+    .density_KernSmooth(object, x)
+  } else {
+    stop("object must be a fit from BK2002(), BinnedNP(), or KernSmooth().", call. = FALSE)
+  }
+}
+
+Plot_Kernel <- function(object, eval_grid = NULL, add = FALSE,
+                        xlab = "x", ylab = "Density", col = "darkgreen",
+                        lwd = 2, ...) {
+  if (!.is_kernel_fit(object)) {
+    stop("object must be a fit from BK2002(), BinnedNP(), or KernSmooth().", call. = FALSE)
+  }
+  if (is.null(eval_grid)) {
+    eval_grid <- .eval_grid_from_breaks(object$grid)
+  }
+  dens <- .density_kernel(object, eval_grid)
+  if (add) {
+    lines(eval_grid, dens, col = col, lwd = lwd, ...)
+  } else {
+    plot(eval_grid, dens, type = "l", xlab = xlab, ylab = ylab,
+         col = col, lwd = lwd, ...)
+  }
+  invisible(data.frame(x = eval_grid, density = dens))
 }

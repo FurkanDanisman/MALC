@@ -86,12 +86,12 @@ study. All use the same `counts, grid` input format.
 
 ```r
 bk <- BK2002(counts, grid)
-bn <- BinnedNP(counts, grid)
+bn <- BinnedNP(counts, grid, bandwidth = "boot")
 ks <- KernSmooth(counts, grid)
 
-evaluate_BK2002(bk, x)
-evaluate_BinnedNP(bn, x)
-evaluate_KernSmooth(ks, x)
+Plot_Kernel(bk)
+Plot_Kernel(bn)
+Plot_Kernel(ks)
 ```
 
 Numerical L2 errors can be computed against a known density:
@@ -99,10 +99,10 @@ Numerical L2 errors can be computed against a known density:
 ```r
 true_pdf <- function(z) dnorm(z)
 
-L2_DensOLog(counts, grid, true_pdf)
-L2_BK2002(counts, grid, true_pdf)
-L2_BinnedNP(counts, grid, true_pdf)
-L2_KernSmooth(counts, grid, true_pdf)
+Eval(fit, true_pdf)
+Eval(bk, true_pdf)
+Eval(bn, true_pdf)
+Eval(ks, true_pdf)
 ```
 
 ---

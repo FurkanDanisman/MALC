@@ -1,27 +1,18 @@
-\name{L2-functions}
-\alias{L2_DensOLog}
-\alias{L2_BK2002}
-\alias{L2_BinnedNP}
-\alias{L2_KernSmooth}
+\name{Eval}
+\alias{Eval}
 \title{L2 error calculations}
 \usage{
-L2_DensOLog(counts, grid, pdf, length_grid = 1001, ...)
-
-L2_BK2002(counts, grid, pdf, length_grid = 1001, ...)
-
-L2_BinnedNP(counts, grid, pdf, length_grid = 1001, ...)
-
-L2_KernSmooth(counts, grid, pdf, length_grid = 1001, ...)
+Eval(object, pdf, length_grid = 1001)
 }
 \arguments{
-\item{counts}{Integer observed frequencies for each bin.}
-\item{grid}{Numeric bin breaks.}
+\item{object}{A fitted object returned by \code{DensOLog()}, \code{BK2002()},
+\code{BinnedNP()}, or \code{KernSmooth()}.}
 \item{pdf}{True density function used for comparison.}
 \item{length_grid}{Number of evaluation grid points.}
-\item{...}{Additional arguments passed to the fitting function.}
 }
 \description{
-Compute numerical L2 errors on a dense evaluation grid, matching the simulation
-study convention.
+Compute numerical L2 error on a dense evaluation grid, matching the simulation
+study convention. The fitted object supplies the density estimator; \code{pdf}
+supplies the target density.
 }
 \value{A numeric L2 error.}

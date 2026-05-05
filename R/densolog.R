@@ -87,7 +87,7 @@ DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
   )
 }
 
-evaluate_DensOLog <- function(object, x) {
+.density_DensOLog <- function(object, x) {
   if (!inherits(object, "DensOLog")) {
     stop("object must be a DensOLog fit.", call. = FALSE)
   }
@@ -103,7 +103,7 @@ evaluate_DensOLog <- function(object, x) {
 }
 
 ddensolog <- function(object, x) {
-  evaluate_DensOLog(object, x)
+  .density_DensOLog(object, x)
 }
 
 pdensolog <- function(object, q, length_grid = 1001) {
