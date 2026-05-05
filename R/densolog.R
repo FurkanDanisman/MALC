@@ -80,7 +80,6 @@ DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
       alpha = alpha,
       beta = beta,
       mu_hat = mu_n,
-      mu_vec = em_fit$mu_vec,
       sumphat = sum(phat),
       checkZ = check_z
     ),
