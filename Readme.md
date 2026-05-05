@@ -1,7 +1,7 @@
 # DensOLog
 
 **DensOLog** is our density-estimation algorithm designed for **binned / rounded / interval-grouped** observations.  
-This repository provides code to run DensOLog and compare it against **three baseline approaches** commonly used for binned-data density estimation.
+This repository provides code to run DensOLog and compare it against **three Kernel-based baseline approaches** used for binned-data density estimation.
 
 ---
 
