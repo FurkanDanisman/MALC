@@ -54,7 +54,7 @@ for (country in Countries){
   
   density_female = evaluateLogConDens(grid2,lcd_results_female$fhatn,which = c(4,5))
   
-  cdf_female = density_male[,6]
+  cdf_female = density_female[,6]
   
   estimated_grid_density_female = density_female[,5]
   
@@ -104,19 +104,9 @@ for (country in Countries){
   
   lines(grid2, hazard_func_female,col="purple",lwd = 5)
   
-  legend("topleft", 
-         legend = c(glue("Female"),glue("Male")), 
-         col = c("purple","brown3"), 
-         lty = c(1,1),
-         lwd = c(5,5),
-         bty = "n", 
-         pt.cex = 2, 
-         cex = 2, 
-         text.col = "black", 
-         horiz = F, 
-         inset = c(0, 0),x.intersp = 0.2, y.intersp = 1,seg.len = 0.75) # -0.3
-  
   dev.off()
+ 
+  print(country)
   
 }
 
