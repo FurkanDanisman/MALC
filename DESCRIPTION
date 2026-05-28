@@ -4,7 +4,12 @@ Title: Density Estimation from Ordered Log-Concave Discrete Data
 Version: 0.1.0
 Authors@R: c(
     person("Furkan", "Danisman", role = c("aut", "cre"),
-           email = "furkan.danisman@mail.utoronto.ca")
+           email = "furkan.danisman@mail.utoronto.ca",
+           comment = c(affiliation = "University of Toronto; Vector Institute for Artificial Intelligence")),
+    person("Hanna", "Jankowski", role = "aut",
+           comment = c(affiliation = "York University")),
+    person("Camila P. E.", "de Souza", role = "aut",
+           comment = c(affiliation = "Western University"))
     )
 Description: Implements MALC density estimation from observed frequencies
     on a grid, together with comparison methods used in the accompanying
