@@ -1,4 +1,4 @@
 library(testthat)
-library(DensOLog)
+library(MALC)
 
-test_check("DensOLog")
+test_check("MALC")

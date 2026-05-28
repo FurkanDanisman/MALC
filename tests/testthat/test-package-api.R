@@ -3,14 +3,14 @@ test_that("comparison methods use counts and grid inputs", {
   grid <- seq(-2.5, 2.5, length.out = length(counts) + 1)
   x_eval <- seq(min(grid), max(grid), length.out = 25)
 
-  do <- DensOLog(counts, grid, B = 200)
-  expect_equal(mean_densolog(do), do$mu_hat)
-  expect_true(is.finite(mean_densolog(do)))
+  do <- MALC(counts, grid, B = 200)
+  expect_equal(mean_malc(do), do$mu_hat)
+  expect_true(is.finite(mean_malc(do)))
 
-  do_s <- DensOLog(counts, grid, B = 200, smooth = TRUE)
-  expect_length(ddensolog(do, x_eval), length(x_eval))
-  expect_length(ddensolog(do_s, x_eval), length(x_eval))
-  expect_false(isTRUE(all.equal(ddensolog(do, x_eval), ddensolog(do_s, x_eval))))
+  do_s <- MALC(counts, grid, B = 200, smooth = TRUE)
+  expect_length(dmalc(do, x_eval), length(x_eval))
+  expect_length(dmalc(do_s, x_eval), length(x_eval))
+  expect_false(isTRUE(all.equal(dmalc(do, x_eval), dmalc(do_s, x_eval))))
   expect_true(is.finite(Eval(do, dnorm)))
   expect_true(is.finite(Eval(do_s, dnorm)))
 

@@ -25,8 +25,8 @@ EMemp_counts <- function(counts, grid, sigma = 1, start = 0,
   list(mu_hat = mu_new, mu_vec = mu_vec)
 }
 
-DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
-                     seed = 20180621, log_conc = TRUE) {
+MALC <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
+                 seed = 20180621, log_conc = TRUE) {
   .check_counts_grid(counts, grid)
   .check_uniform_grid(grid)
 
@@ -57,7 +57,7 @@ DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
   beta <- 2 * alpha * (Delta / delta - 0.5)
   check_z <- min(alpha + beta, alpha - beta)
   if (!is.finite(check_z) || check_z <= 0) {
-    stop("DensOLog beta perturbation parameters are not positive for this input.", call. = FALSE)
+    stop("MALC beta perturbation parameters are not positive for this input.", call. = FALSE)
   }
 
   old_seed <- .restore_seed(seed)
@@ -83,13 +83,13 @@ DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
       sumphat = sum(phat),
       checkZ = check_z
     ),
-    class = "DensOLog"
+    class = "MALC"
   )
 }
 
-.density_DensOLog <- function(object, x) {
-  if (!inherits(object, "DensOLog")) {
-    stop("object must be a DensOLog fit.", call. = FALSE)
+.density_MALC <- function(object, x) {
+  if (!inherits(object, "MALC")) {
+    stop("object must be a MALC fit.", call. = FALSE)
   }
   if (isTRUE(object$smooth)) {
     out <- logcondens::evaluateLogConDens(x, object$fhatn, which = 4)
@@ -102,13 +102,13 @@ DensOLog <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
   ans
 }
 
-ddensolog <- function(object, x) {
-  .density_DensOLog(object, x)
+dmalc <- function(object, x) {
+  .density_MALC(object, x)
 }
 
-pdensolog <- function(object, q, length_grid = 1001) {
+pmalc <- function(object, q, length_grid = 1001) {
   eval_grid <- .eval_grid_from_breaks(object$grid, length_grid = length_grid)
-  dens <- ddensolog(object, eval_grid)
+  dens <- dmalc(object, eval_grid)
   dx <- diff(eval_grid)
   cdf <- c(0, cumsum((dens[-length(dens)] + dens[-1L]) * dx / 2))
   if (max(cdf) > 0) {
@@ -117,12 +117,12 @@ pdensolog <- function(object, q, length_grid = 1001) {
   stats::approx(eval_grid, cdf, xout = q, yleft = 0, yright = 1, rule = 2)$y
 }
 
-qdensolog <- function(object, p, length_grid = 1001) {
+qmalc <- function(object, p, length_grid = 1001) {
   if (any(!is.finite(p)) || any(p < 0 | p > 1)) {
     stop("p must be finite probabilities in [0, 1].", call. = FALSE)
   }
   eval_grid <- .eval_grid_from_breaks(object$grid, length_grid = length_grid)
-  dens <- ddensolog(object, eval_grid)
+  dens <- dmalc(object, eval_grid)
   dx <- diff(eval_grid)
   cdf <- c(0, cumsum((dens[-length(dens)] + dens[-1L]) * dx / 2))
   if (max(cdf) > 0) {
@@ -131,20 +131,20 @@ qdensolog <- function(object, p, length_grid = 1001) {
   stats::approx(cdf, eval_grid, xout = p, ties = "ordered", rule = 2)$y
 }
 
-mean_densolog <- function(object) {
-  if (!inherits(object, "DensOLog")) {
-    stop("object must be a DensOLog fit.", call. = FALSE)
+mean_malc <- function(object) {
+  if (!inherits(object, "MALC")) {
+    stop("object must be a MALC fit.", call. = FALSE)
   }
   object$mu_hat
 }
 
-plot.DensOLog <- function(x, eval_grid = NULL, add = FALSE,
-                          xlab = "x", ylab = "Density", col = "navy",
-                          lwd = 2, ...) {
+plot.MALC <- function(x, eval_grid = NULL, add = FALSE,
+                      xlab = "x", ylab = "Density", col = "navy",
+                      lwd = 2, ...) {
   if (is.null(eval_grid)) {
     eval_grid <- .eval_grid_from_breaks(x$grid)
   }
-  dens <- ddensolog(x, eval_grid)
+  dens <- dmalc(x, eval_grid)
   if (add) {
     lines(eval_grid, dens, col = col, lwd = lwd, ...)
   } else {

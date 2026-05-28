@@ -1,4 +1,4 @@
-Package: DensOLog
+Package: MALC
 Type: Package
 Title: Density Estimation from Ordered Log-Concave Discrete Data
 Version: 0.1.0
@@ -8,7 +8,7 @@ Authors@R: c(
     )
 Author: Furkan Danisman [aut, cre]
 Maintainer: Furkan Danisman <furkandanisman@example.com>
-Description: Implements DensOLog density estimation from observed frequencies
+Description: Implements MALC density estimation from observed frequencies
     on a grid, together with comparison methods used in the accompanying
     simulation study: BK2002, BinnedNP, and KernSmooth.
 License: MIT + file LICENSE

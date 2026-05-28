@@ -27,7 +27,7 @@
 }
 \lstset{style = Rstyle}
 
-\title{\textbf{DensOLog Package Manual}\\
+\title{\textbf{MALC Package Manual}\\
 \large Density Estimation from Ordered Log-Concave Discrete Data}
 \author{Furkan Danisman}
 \date{Version 0.1.0}
@@ -40,10 +40,10 @@
 
 \section{Overview}
 
-\texttt{DensOLog} implements density estimation from observed frequencies on a
+\texttt{MALC} implements density estimation from observed frequencies on a
 known grid. The package is designed for application settings where the raw
 sample is already aggregated into bin counts. The main estimator is
-\texttt{DensOLog()}, and the package also includes the three comparison methods
+\texttt{MALC()}, and the package also includes the three comparison methods
 used in the simulation study:
 
 \begin{enumerate}
@@ -59,7 +59,7 @@ All fitting functions use the same basic input structure:
   \item \texttt{grid}: numeric grid breaks with length \texttt{length(counts) + 1}.
 \end{itemize}
 
-The DensOLog fit supports density, distribution, quantile, mean, and plotting
+The MALC fit supports density, distribution, quantile, mean, and plotting
 methods. Kernel comparison fits support L2 evaluation through \texttt{Eval()}
 and visualization through \texttt{Plot\_Kernel()}.
 
@@ -76,12 +76,12 @@ remotes::install_github("FurkanDanisman/DensOLog", ref = "package-format")
 Then load the package:
 
 \begin{lstlisting}
-library(DensOLog)
+library(MALC)
 \end{lstlisting}
 
 \section{Input Format}
 
-\texttt{DensOLog()} does not accept raw observations. It accepts only observed
+\texttt{MALC()} does not accept raw observations. It accepts only observed
 frequencies and grid breaks.
 
 \begin{lstlisting}
@@ -94,19 +94,19 @@ counts <- as.integer(table(cut(x, breaks = grid, include.lowest = TRUE)))
 In direct package usage, the preprocessing step above can be done by the user
 or by an application before calling the package.
 
-\section{DensOLog Estimator}
+\section{MALC Estimator}
 
 \subsection{Fit}
 
 \begin{lstlisting}
-fit <- DensOLog(counts, grid)
-fit_s <- DensOLog(counts, grid, smooth = TRUE)
+fit <- MALC(counts, grid)
+fit_s <- MALC(counts, grid, smooth = TRUE)
 \end{lstlisting}
 
 \subsection*{Usage}
 
 \begin{lstlisting}
-DensOLog(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
+MALC(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
          seed = 20180621, log_conc = TRUE)
 \end{lstlisting}
 
@@ -126,70 +126,70 @@ Argument & Description \\
 \bottomrule
 \end{tabular}
 
-\section{DensOLog Methods}
+\section{MALC Methods}
 
-\subsection{\texttt{ddensolog()}}
+\subsection{\texttt{dmalc()}}
 
-Evaluate the fitted DensOLog density.
+Evaluate the fitted MALC density.
 
 \begin{lstlisting}
 x_eval <- seq(min(grid), max(grid), length.out = 200)
-d_hat <- ddensolog(fit, x_eval)
+d_hat <- dmalc(fit, x_eval)
 \end{lstlisting}
 
 \subsection*{Usage}
 
 \begin{lstlisting}
-ddensolog(object, x)
+dmalc(object, x)
 \end{lstlisting}
 
-\subsection{\texttt{pdensolog()}}
+\subsection{\texttt{pmalc()}}
 
 Evaluate the fitted distribution function numerically.
 
 \begin{lstlisting}
-pdensolog(fit, c(-1, 0, 1))
+pmalc(fit, c(-1, 0, 1))
 \end{lstlisting}
 
 \subsection*{Usage}
 
 \begin{lstlisting}
-pdensolog(object, q, length_grid = 1001)
+pmalc(object, q, length_grid = 1001)
 \end{lstlisting}
 
-\subsection{\texttt{qdensolog()}}
+\subsection{\texttt{qmalc()}}
 
 Evaluate fitted quantiles numerically.
 
 \begin{lstlisting}
-qdensolog(fit, c(0.25, 0.50, 0.75))
+qmalc(fit, c(0.25, 0.50, 0.75))
 \end{lstlisting}
 
 \subsection*{Usage}
 
 \begin{lstlisting}
-qdensolog(object, p, length_grid = 1001)
+qmalc(object, p, length_grid = 1001)
 \end{lstlisting}
 
-\subsection{\texttt{mean\_densolog()}}
+\subsection{\texttt{mean\_malc()}}
 
 Return the EM-step mean estimate stored in the fitted object. This is not a
-smoothed/non-smoothed choice; it is the mean estimate from the DensOLog fitting
+smoothed/non-smoothed choice; it is the mean estimate from the MALC fitting
 step.
 
 \begin{lstlisting}
-mean_densolog(fit)
+mean_malc(fit)
 \end{lstlisting}
 
 \subsection*{Usage}
 
 \begin{lstlisting}
-mean_densolog(object)
+mean_malc(object)
 \end{lstlisting}
 
 \subsection{\texttt{Plot()}}
 
-Plot a fitted DensOLog density. The plotted density follows the \texttt{smooth}
+Plot a fitted MALC density. The plotted density follows the \texttt{smooth}
 choice stored in the fitted object.
 
 \begin{lstlisting}
@@ -279,7 +279,7 @@ Plot_Kernel(object, eval_grid = NULL, add = FALSE,
 \section{L2 Evaluation}
 
 \texttt{Eval()} computes the numerical L2 distance between a fitted density
-estimator and a supplied true density function. It accepts both DensOLog fits
+estimator and a supplied true density function. It accepts both MALC fits
 and kernel-method fits.
 
 \begin{lstlisting}
@@ -304,7 +304,7 @@ Eval(object, pdf, length_grid = 1001)
 \toprule
 Argument & Description \\
 \midrule
-\texttt{object} & Fitted object from \texttt{DensOLog()}, \texttt{BK2002()}, \texttt{BinnedNP()}, or \texttt{KernSmooth()}. \\
+\texttt{object} & Fitted object from \texttt{MALC()}, \texttt{BK2002()}, \texttt{BinnedNP()}, or \texttt{KernSmooth()}. \\
 \texttt{pdf} & True density function used for comparison. \\
 \texttt{length\_grid} & Number of numerical evaluation points. \\
 \bottomrule
@@ -313,20 +313,20 @@ Argument & Description \\
 \section{Complete Example}
 
 \begin{lstlisting}
-library(DensOLog)
+library(MALC)
 
 set.seed(1)
 x <- rnorm(1000)
 grid <- seq(-4, 4, by = 0.5)
 counts <- as.integer(table(cut(x, breaks = grid, include.lowest = TRUE)))
 
-fit <- DensOLog(counts, grid)
-fit_s <- DensOLog(counts, grid, smooth = TRUE)
+fit <- MALC(counts, grid)
+fit_s <- MALC(counts, grid, smooth = TRUE)
 
-ddensolog(fit, seq(-2, 2, length.out = 5))
-pdensolog(fit, c(-1, 0, 1))
-qdensolog(fit, c(0.25, 0.50, 0.75))
-mean_densolog(fit)
+dmalc(fit, seq(-2, 2, length.out = 5))
+pmalc(fit, c(-1, 0, 1))
+qmalc(fit, c(0.25, 0.50, 0.75))
+mean_malc(fit)
 Plot(fit)
 
 bk <- BK2002(counts, grid)
@@ -348,11 +348,11 @@ Eval(ks, true_pdf)
 \section{Exported Functions}
 
 \begin{itemize}
-  \item \texttt{DensOLog()}
-  \item \texttt{ddensolog()}
-  \item \texttt{pdensolog()}
-  \item \texttt{qdensolog()}
-  \item \texttt{mean\_densolog()}
+  \item \texttt{MALC()}
+  \item \texttt{dmalc()}
+  \item \texttt{pmalc()}
+  \item \texttt{qmalc()}
+  \item \texttt{mean\_malc()}
   \item \texttt{Plot()}
   \item \texttt{BK2002()}
   \item \texttt{BinnedNP()}

@@ -1,9 +1,9 @@
 \docType{package}
-\name{DensOLog-package}
-\alias{DensOLog-package}
+\name{MALC-package}
+\alias{MALC-package}
 \title{Density estimation from observed frequencies on a grid}
 \description{
-The \pkg{DensOLog} package implements DensOLog density estimation from
+The \pkg{MALC} package implements MALC density estimation from
 observed bin frequencies and grid breaks. It also includes the comparison
 methods BK2002, BinnedNP, and KernSmooth in count/grid form.
 }

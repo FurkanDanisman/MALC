@@ -1,7 +1,7 @@
-# DensOLog
+# MALC
 
-**DensOLog** is our density-estimation algorithm designed for **binned / rounded / interval-grouped** observations.  
-This repository provides code to run DensOLog and compare it against **three Kernel-based baseline approaches** used for binned-data density estimation.
+**MALC** is our density-estimation algorithm designed for **binned / rounded / interval-grouped** observations.  
+This repository provides code to run MALC and compare it against **three kernel-based baseline approaches** used for binned-data density estimation.
 
 ---
 
@@ -17,13 +17,13 @@ remotes::install_github("FurkanDanisman/DensOLog", ref = "package-format")
 After installation:
 
 ```r
-library(DensOLog)
+library(MALC)
 ```
 
 The package is not yet on CRAN, so this will not work until a CRAN release is available:
 
 ```r
-install.packages("DensOLog")
+install.packages("MALC")
 ```
 
 ---
@@ -33,12 +33,12 @@ install.packages("DensOLog")
 The package API uses observed bin frequencies and grid breaks. The main fitting function does not take raw observations.
 
 ```r
-library(DensOLog)
+library(MALC)
 
 counts <- c(2, 6, 12, 20, 12, 6, 2)
 grid <- seq(-3.5, 3.5, length.out = length(counts) + 1)
 
-fit <- DensOLog(counts, grid)
+fit <- MALC(counts, grid)
 ```
 
 Here, `counts[j]` is the observed frequency in the interval
@@ -50,10 +50,10 @@ Evaluate the fitted density, CDF, quantiles, and EM-step mean:
 ```r
 x <- seq(min(grid), max(grid), length.out = 200)
 
-dhat <- ddensolog(fit, x)
-phat <- pdensolog(fit, c(-1, 0, 1))
-qhat <- qdensolog(fit, c(0.25, 0.5, 0.75))
-mhat <- mean_densolog(fit)
+dhat <- dmalc(fit, x)
+phat <- pmalc(fit, c(-1, 0, 1))
+qhat <- qmalc(fit, c(0.25, 0.5, 0.75))
+mhat <- mean_malc(fit)
 ```
 
 Plot the fitted density:
@@ -66,15 +66,15 @@ To fit the smoothed version, set `smooth = TRUE` when fitting. Downstream
 functions automatically follow the smoothing choice stored in the fitted object.
 
 ```r
-fit_s <- DensOLog(counts, grid, smooth = TRUE)
+fit_s <- MALC(counts, grid, smooth = TRUE)
 
-ddensolog(fit_s, x)
-pdensolog(fit_s, c(-1, 0, 1))
-qdensolog(fit_s, c(0.25, 0.5, 0.75))
+dmalc(fit_s, x)
+pmalc(fit_s, c(-1, 0, 1))
+qmalc(fit_s, c(0.25, 0.5, 0.75))
 Plot(fit_s)
 ```
 
-`mean_densolog()` returns the EM-step mean estimate and is independent of the
+`mean_malc()` returns the EM-step mean estimate and is independent of the
 smoothing choice.
 
 ---
@@ -109,16 +109,16 @@ Eval(ks, true_pdf)
 
 ## What’s in this repo
 
-1. DensOLog and three baseline (KernSmooth, binnednp, NKDEBD) algorithms.
+1. MALC and three baseline (KernSmooth, binnednp, NKDEBD) algorithms.
 2. Simulation codes and results to compare methods.
 3. Code to compare methods visually.
-4. Application of DensOLog on real data and synthetic data. 
-5. A package-style manual in `Manual/DensOLog-manual.pdf`, with LaTeX source in `Manual/DensOLog-manual.tex`.
+4. Application of MALC on real data and synthetic data. 
+5. A package-style manual in `Manual/MALC-manual.pdf`, with LaTeX source in `Manual/MALC-manual.tex`.
 
 ### Repository structure
 
 - `Algorithms/`  
-  Algorithms of **DensOLog** and the **3 comparison methods**, plus shared utilities (e.g., binning helpers, normalizations, evaluation metrics).
+  Algorithms of **MALC** and the **3 comparison methods**, plus shared utilities (e.g., binning helpers, normalizations, evaluation metrics).
 
 - `Simulations/`  
   Scripts to reproduce simulation studies: data generation, repeated runs, saving results, and summary tables.
@@ -133,7 +133,7 @@ Eval(ks, true_pdf)
 
 ## Methods compared
 
-This repo compares **DensOLog** with the following methods:
+This repo compares **MALC** with the following methods:
 
 ### 1) `KernSmooth` (binned kernel density estimation)
 We use functions from the **KernSmooth** R package, which implements kernel smoothing and density estimation routines supporting the framework in *Wand & Jones (1995)*.

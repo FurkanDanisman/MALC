@@ -5,7 +5,7 @@
 Eval(object, pdf, length_grid = 1001)
 }
 \arguments{
-\item{object}{A fitted object returned by \code{DensOLog()}, \code{BK2002()},
+\item{object}{A fitted object returned by \code{MALC()}, \code{BK2002()},
 \code{BinnedNP()}, or \code{KernSmooth()}.}
 \item{pdf}{True density function used for comparison.}
 \item{length_grid}{Number of evaluation grid points.}

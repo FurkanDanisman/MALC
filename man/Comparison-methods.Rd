@@ -33,7 +33,7 @@ Plot_Kernel(object, eval_grid = NULL, add = FALSE, xlab = "x",
 \item{xlab, ylab, col, lwd, ...}{Graphical controls passed to \code{plot()} or \code{lines()}.}
 }
 \description{
-Fit the three baseline estimators used in the DensOLog simulation study:
+Fit the three baseline estimators used in the MALC simulation study:
 BK2002, BinnedNP, and KernSmooth. All methods use observed frequencies and
 grid breaks as inputs. \code{Plot_Kernel()} plots any fitted comparison-method
 object.

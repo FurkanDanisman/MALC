@@ -232,13 +232,13 @@ KernSmooth <- function(counts, grid, seed = 1, scalest = "minim",
 
   structure(
     list(x = fit$x, fhat = fit$y, h = h, counts = counts, grid = grid),
-    class = "DensOLogKernSmooth"
+    class = "MALCKernSmooth"
   )
 }
 
 .density_KernSmooth <- function(object, x) {
-  if (!inherits(object, "DensOLogKernSmooth")) {
-    stop("object must be a KernSmooth fit returned by DensOLog::KernSmooth().", call. = FALSE)
+  if (!inherits(object, "MALCKernSmooth")) {
+    stop("object must be a KernSmooth fit returned by MALC::KernSmooth().", call. = FALSE)
   }
   stats::approx(object$x, object$fhat, xout = x, rule = 2)$y
 }
@@ -246,7 +246,7 @@ KernSmooth <- function(counts, grid, seed = 1, scalest = "minim",
 .is_kernel_fit <- function(object) {
   inherits(object, "BK2002") ||
     inherits(object, "BinnedNP") ||
-    inherits(object, "DensOLogKernSmooth")
+    inherits(object, "MALCKernSmooth")
 }
 
 .density_kernel <- function(object, x) {
@@ -254,7 +254,7 @@ KernSmooth <- function(counts, grid, seed = 1, scalest = "minim",
     .density_BK2002(object, x)
   } else if (inherits(object, "BinnedNP")) {
     .density_BinnedNP(object, x)
-  } else if (inherits(object, "DensOLogKernSmooth")) {
+  } else if (inherits(object, "MALCKernSmooth")) {
     .density_KernSmooth(object, x)
   } else {
     stop("object must be a fit from BK2002(), BinnedNP(), or KernSmooth().", call. = FALSE)
