@@ -1,0 +1,1801 @@
+\documentclass[12pt]{article} % Set the font size to 12pt
+\usepackage{hyperref} 
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+%\usepackage{algpseudocode} % defines \State, \For, \If, etc.
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{lipsum}
+\usepackage[table]{xcolor}  % For coloring the table cells
+\usepackage{multirow}  % For multi-row cells
+\usepackage{colortbl}  % For coloring table lines
+\usepackage{caption}  % For customizing captions
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{subcaption}
+\usepackage{rotating}
+\usepackage{authblk} % Package for author and affiliation formatting
+\usepackage{setspace} % Package for custom spacing
+\usepackage[super]{nth}
+\usepackage{float} 
+\usepackage{natbib}
+\newcommand{\methodfigw}{0.165\textwidth}
+\newcommand{\densityfigw}{0.285\textwidth}
+\newcommand{\densityfigh}{0.20\textheight}
+\newcommand{\rowlab}[1]{\raisebox{0.062\textwidth}{\rotatebox{90}{\small #1}}}
+
+%\usepackage[authoryear]{natbib}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+
+
+\usepackage{mathptmx}  % Use Times New Roman font
+
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+\definecolor{orange}{rgb}{1,0.5,0}
+\definecolor{purple}{rgb}{0.55,0.2,0.90}
+\newcommand{\comC}[1]{{\noindent  \color{orange}#1}}  
+\newcommand{\comH}[1]{{\noindent \color{blue}#1}}
+\newcommand{\comF}[1]{{\noindent \color{purple}#1}}
+
+
+\newcommand{\RR}{\mathbb {R}}
+\newcommand{\FF}{\mathbb {F}}
+\newcommand{\HH}{\mathbb {H}}
+\newcommand{\eps}{\varepsilon}
+
+
+% \title{Mean-Adjusted Log-Concave Density Estimation for Grouped Data}?
+% MALC
+% MALCD
+% MALCden
+
+\title{Bandwidth-free nonparametric density estimation for grouped data}
+
+\author[a,d]{Furkan Danisman\thanks{CONTACT Furkan Danisman. Email: furkandanisman@gmail.com}}
+\author[b]{Hanna Jankowski}
+\author[c]{Camila P. E. de Souza}
+
+\affil[a]{University of Toronto, ON, Canada}
+\affil[b]{York University, ON, Canada}
+\affil[c]{Western University, ON, Canada}
+\affil[d]{Vector Institute for Artificial Intelligence, Toronto, Canada}
+
+\providecommand{\keywords}[1]{\textbf{\textit{Keywords:}} #1}
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+
+In some situations, data is collected under systematical and technical constraints due to uncertainty in experimental reports, intermittent measurements, confidentiality, and non-detects. For this reason, it might not be possible to retrieve or receive the data in a conventional format but rather in a grouped form where only the number of occurrences is known within intervals. The challenge is to estimate the density of the underlying ungrouped data based on the observed grouped data with no information regarding the underlying distribution. To overcome this problem, this study introduces an adjusted log-concave density estimation (ALCDE) method for univariate grouped data, aiming to provide a non-parametric approach that does not rely on specific distributional assumptions. The performance of the ALCDE method is evaluated through simulations across various distributions with different sample sizes and grid widths. %A human mortality data set is considered as a real-life application example. 
+The results demonstrate the robustness and effectiveness of the ALCDE approach in grouped data analysis, offering a broader range of applications over traditional methods. 
+
+
+
+\end{abstract}
+
+\begin{keywords}
+Grouped data analysis, log-concave density, Expectation-Maximization
+\end{keywords}
+
+% Camila's ORCID: http://orcid.org/0000-0002-4465-5792
+
+%\section{TODO}
+
+%\begin{itemize}
+%\item Need to carefully think of simulations in earlier sections as well
+%\item FD does a few examples showing that $\sigma$ doesn't matter (as long as condition is good).  
+%\item FD implements two other methods and adds simulations  (I want add random value to match recovered mean, and then do lcd; add LCM of log density as well)
+%\item Smoothing?
+%\item FD writes appendix on EM for practice  DONE - HJ needs to port and check
+%\item Since the grid is fixed, what should we assume about the "end"?
+%\end{itemize}
+
+
+\input{introduction.tex}
+
+% \section{Introduction}
+% \label{sec:intro}
+
+% Notes: nonparametric but no bandwidth selection
+
+% \comH{So far, looks very good - I'll need to fix up the grammar a bit here and there once closer to done.  You may also want to clarify what you mean by grouped data early on.}
+
+% In some cases, the collected data may not fully meet the researcher's goals due to systematic or technical limitations in the data collection process, such as uncertainty in experimental reports, intermittent measurements, confidentiality, and non-detects \cite{ferson2004summary, lindsey1998methods, osegueda2002non, wieringa2021data, zhang2010interval}. Consequently, under such circumstances, data may be retrieved or received only in a grouped or symbolic manner. This study focuses on analyzing grouped data, where only the intervals and frequencies of observations within those intervals are known. We aim to enhance the analysis of grouped data by proposing a non-parametric density estimation approach that addresses the shortcomings of previous methods. 
+
+% \comH{This next paragraph I'm not even getting through.   Can you re-write in a more straightforward way?   Density estimation for grouped data can be first subdivided into parameteric and non-parametric settings.   For the parametric approach, the most common approaches include the Gaussian Beta etc ??? families (give refs here).  Second to the choice of parametric family, there are also various types of estimation methods.   These include maximum likelihood (ref), second methods (ref), and so on...
+
+% Non-parametric would go into a separate paragraph.  
+
+% }
+
+% \textcolor{magenta}{Do we need to mention interval-censored data? Mukherjee \& Xie say grouped data is a special case of interval-censored data.}
+
+% \textcolor{magenta}{The bootstrap-based method considers an unknown parametric family and estimates location and dispersion parameters. Still parametric? This one is for inference. No need to include.}
+
+% \textcolor{magenta}{Shall we include the regression-related papers?. Leave them commented out.}
+
+% \textcolor{magenta}{Rizzi paper is nonparametric to go from a coarse grid to a finer grid, but still finite. In the discussion we can say that their method can be used to obtain a uniform grid from a non-uniform and then apply our method. Also, if we consider concavity for the betas (beta is not specificied as concave but could) we would have the log discrete concave estimation. }
+
+% \textcolor{magenta}{Density estimation for grouped data has been studied from parametric and non-parametric perspectives. For the parametric approach, the problem reduces to estimating the parameters from a given distribution, such as the Gaussian, exponential, Weibull, or log-normal \citep{tallis1967approximate,crafford2007statistical,xiao2016estimation,Zahra2022}. Second to the choice of parametric family, there are various types of estimation methods. These include maximizing the log-likelihood via numerical techniques \citep{tallis1967approximate}, maximum likelihood via Expectation-Maximization (EM) and Monte Carlo EM algorithms \citep{Zahra2022}, Bayesian inference ..., robust modification to maximum likelihood \citep{victoria1997robust} }
+
+% \textcolor{magenta}{There are references from Zahra's paper that can used here}
+
+% The realm of grouped data analysis has been studied with both parametric and non-parametric perspectives. Under the parametric scope, Tallis \cite{tallis1967approximate} has approached this issue with maximum likelihood estimates of the parameters for univariate and multivariate grouped data sets. Victoria-Feser \& Ronchetti \cite{victoria1997robust} proposed optimal bounded influence function estimators to reduce the bias of the maximum likelihood method. Heitjan \cite{heitjan1991regression} has combined Newton-Raphson's method and the EM algorithm to obtain bivariate regression analysis parameter estimates for grouped data assuming normal errors. Crafford \cite{crafford2007statistical} provided a maximum likelihood method to fit a bivariate normal distribution to a two-way contingency table where the two underlying continuous variables are jointly normally distributed. Velez and Correa \cite{velez2015bootstrap} introduced a bootstrap method to estimate the parameters, including the coefficient of variation for univariate structure. Mukherjee \& Xie \cite{xiao2016estimation} have applied an ad hoc estimation procedure and demonstrated its effectiveness compared to maximum likelihood estimation, the minimum distance estimation based on the chi-square criterion, and the moment estimation based on the imputation (IM) method. Chen \& Miljkovic \cite{chen2018from} considered de-grouping the data and estimating the parameters with additional information on the average value of the observations. AghahosseinaliShirazi et al. \cite{aghahosseinalishirazi2022parameter}  applied the Expectation-Maximization (EM) and Monte Carlo EM algorithms to estimate the parameter for normally distributed grouped data for the univariate, bivariate, and multivariate cases. Additionally, within the non-parametric framework, Rizzi \cite{rizzi2015efficient} considered a non-parametric adaptable method to ungroup data by maximizing a penalized likelihood, assuming the underlying distribution is smooth. The greater number of papers proposing parametric approaches compared to non-parametric shows that there is a need for more non-parametric methods to analyze grouped data.  
+
+% \comH{Here, I'll write a little paragraph introducing maximum likelihood for log-concave density esitmation, references, and why we want to use this approach over kernels.  Moved your stuff here: Log-concave density estimation is a non-parametric method for estimating the density function from univariate i.i.d. data. It imposes a qualitative constraint of log-concavity, but it does not require a bandwidth or penalty parameter as other non-parametric approaches \citep{dumben2011logcondens}. }
+
+% In this study, we propose a non-parametric adjusted log-concave density estimation approach for univariate continous grouped data. Our goal is to provide a method that does not require a specific assumption about the underlying distribution of the data but rather a broader log-concavity assumption, as in \cite{azadbakhsh2016multiple, JankowskiDiscr2013,dumben2009logcondens}.  \comH{Here you first need to explain that the straightforward approach is unidentifiable.}  The center of our proposed log-concave density estimate is adjusted using the mean estimate obtained from the EM algorithm proposed by AghahosseinaliShirazi et al. \cite{aghahosseinalishirazi2022parameter}. This approach reaches beyond the limitations of parametric methods and the additional assumption requirements of prior studies. Before this work, a non-parametric methodology of log-concave density estimation adjusted with the expectation-maximization algorithm mean estimate had never been used in the context of grouped data analysis. We assess the performance of our proposed methodology by simulating data from various distributions with varying sample sizes and grid widths. For each simulation scenario, we compute the Manhattan ($L^1$) and Euclidean ($L^2$) distances between the true density and the adjusted log-concave density estimation. The results are also compared with the EM algorithm assuming normality considered by AghahosseinaliShirazi et al. \cite{aghahosseinalishirazi2022parameter} for univariate grouped data considering normal, gamma, and chi-square as true underlying distributions. Additionally, we apply our approach to real data received from the Human Mortality Database. All simulations and procedures are implemented in R and accessible at https://github.com/. 
+
+% \comH{Then at some point in time you'll need to own up to only considering the univariate setting - but explain why.}
+
+% The latter parts of this study are organized as follows.  Section \ref{sec:methods} outlines the methodology for adjusted log-concave density estimation (ALCDE) in univariate grouped data using the mean estimate from the EM algorithm proposed by AghahosseinaliShirazi et al. \cite{aghahosseinalishirazi2022parameter}. Section \ref{sec:results} presents the performance metric, results of the simulation studies, and the application of our method to a real-life actuarial science data set. Section \ref{subsec:performancemetrics} explains the assessment measures of the applied methods. Section \ref{subsec:simresults} examine the Manhattan and Euclidean distances between true and estimated densities and mass functions for different distributions varying the sample size and grid width while fixing the parameters. Also it compares the EM algorithm assuming normality \cite{aghahosseinalishirazi2022parameter} and the ALCDE method assuming log-concavity for grouped data with normal, gamma, and chi-square underlying distributions. Section \ref{subsec:dataanalysis} demonstrates the application of our approach to the mortality datasets from different countries. Finally, Section \ref{sec:discussion} provides a discussion of our findings and the conclusions drawn from this study.
+
+
+\section{Assumptions and preliminary results}
+\label{sec:methods}
+
+
+   
+Assume that $X_1, \ldots, X_n$ are $n$ independent and identically distributed (IID) random variables such that each variable has density $f$. Let $k$ denote a fixed integer and $a_1, \ldots, a_{k+1}$ represent the group boundaries such that $a_1 < a_2 < \ldots < a_{k+1}$.   We assume that we do not observe the variables $X_1, \ldots, X_n$ directly. Instead, we observe their grouped counts, $n_j= \sum_{i=1}^n \mathbb I_{[a_j, a_{j+1})}(X_i)$, where $\mathbb I_A(x)$ denotes the standard indicator function, equal to one when $x\in A$ and zero otherwise.   Thus, the values $n_j$ denote the number of observations falling within the interval $[a_j, a_{j+1})$ for $1 \leq j \leq k$. Note that we have $\sum_{j=1}^{k} n_j = n$.  Although in practice the exact boundaries of the intervals may not be closed/open as depicted, this should not make a difference in the analysis, as we assume that the data is generated by a continuous density. 
+
+We may therefore describe our observations as $n_1, \ldots, n_{k}$ from a multinomial distribution with parameter $n$ and probabilities $p_1, \ldots, p_k,$ with 
+\begin{eqnarray*}
+p_j &=& \int_{a_j}^{a_{j+1}} f(x)dx, \ \ \ \mbox{for} \; j=1,\ldots, k.
+\end{eqnarray*}
+We will use the notation $p_{n,j}=n_j/n$ to denote the proportions observed in each interval $[a_j, a_{j+1})$.  Notably, we assume that the grid is fixed and does not vary with the sample size.  In this case, if the true density has unbounded support, then we may need to assume that $k=\infty,$ in which case the finite-bin multinomial model no longer applies. 
+
+Our goal is to recover the density $f,$ assuming that $f$ belongs to the class of log-concave densities in $\RR$. Recall that a probability density function $f$ on $\mathbb{R} $ is log-concave  if:
+\begin{eqnarray*}
+f(x) &=& \exp(\varphi(x)) \ \ \ x\in \RR,
+\end{eqnarray*}
+where $\varphi$ is a concave function  $\varphi: \RR \to [-\infty, \infty)$.  If the variables $X_1, \ldots, X_n$ are observed, the density $f$ is typically estimated using maximum likelihood.  As the observations are IID in our setup, the maximum likelihood estimator (MLE) of the log-concave density $f$, $\widehat f_n$, is given by $\exp(\widehat \varphi_n)$ where $\widehat \varphi_n$ is the concave function which maximizes the criterion 
+\begin{eqnarray*}
+    l(\varphi) &=& \frac{1}{n} \sum_{i=1}^{n} \varphi(X_i) - \int e^{\varphi(x)} dx,
+\end{eqnarray*}
+over all concave functions on $\RR$.  One can show that this modified likelihood criterion is maximized at a proper log-concave density function. See Remark~\ref{rem:grid} below. \comC{How is this related to Remark 1? Do we need to refer to Remark 1 here?}
+
+This estimator was first studied in \citet{dumbgen2009logcondens}, where existence and uniqueness of the MLE, as well as a computational algorithm, were established. The authors also show that the MLE $\widehat f_n$ is a consistent estimator of the true log-concave density $f$. Further asymptotic properties, including local and global convergence rates of order $n^{-2/5}$ under certain assumptions, are studied in \citet{brwlogcondens} and \citet{doss1}. For a broader overview of log-concave density estimation, see \citet{revsam, revwalt}.
+
+
+\comC{I guess here we need a sentence/small paragraph to make a connection with the next Section (or to provide a glimpse of what is coming next). So, we should change the following sentence that we currently have a bit as well as think about the best place for Remark 1.} 
+
+As we assume that the variables $X_1, \ldots, X_n$ are unobservable, we need to first discuss the log-concave model under this assumption.
+
+\begin{remark}\label{rem:grid}
+In order to consider any large sample behaviour, we assume that, in general, the grid need not be finite.  That is, let $a_j, j\in \mathbb Z$ denote a countable set of strictly increasing values in $\RR$ such that $\cup_j [a_j, a_{j+1}) \subseteq \RR$.  As such, the number of intervals $k$ need not be finite.  However, for a finite sample size $n$ or for finite support, we can use $k<\infty,$ by considering only the non-empty intervals.   In general, we make no such assumption. \comC{is this the best place for this remark?}
+\end{remark}
+
+\subsection{Model identifiability for grouped data }
+
+\comC{Regarding the title of Section 2.1, I think it needs to be adjusted.}
+
+\citet{JankowskiDiscr2013} studied the log-concave mass function estimator on the univariate grid.   A probability mass function (PMF) $\{p_j, j \in \mathbb N\}$ is discrete log-concave if $\varphi_j = \log p_j$ has a negative discrete Laplace transform.   Recall that the discrete Laplace transform, $(\Delta \varphi)_j$, is defined as:
+\begin{eqnarray*}
+(\Delta \varphi)_j &=& \varphi_{j+1}+\varphi_{j-1}-2\varphi_j\\
+&=& \left\{\varphi_{j+1}-\varphi_j\right\}-\left\{\varphi_j-\varphi_{j-1}\right\}.
+\end{eqnarray*}
+\citet{JankowskiDiscr2013} derive the maximum likelihood estimator of a log-concave mass function (assuming random sampling) and establish consistency and rates of convergence for this estimator. They also show that the MLE is unique and derive an algorithm, based on the active set algorithm, to compute the MLE. See \citet{activeset} for details on the active set algorithm. The algorithm has been implemented in the package \texttt{logConDiscr()}. 
+
+From the work in \citet{JankowskiDiscr2013}, the following then follows:  suppose that the empirical probabilities $p_{n,j}$, $j=1, \ldots, k$ have been observed.   Then the closest (in the Kullback-Leibler sense) log-concave PMF exists and is unique.   We denote this closest PMF as $\widehat{p}_n$.   Practically, $\widehat p_n$ can be found using the R package \texttt{logConDiscr()}.  Note that it follows from \citet{JankowskiDiscr2013} that $\sum_{j=1}^k p_{n,j} a_j=\sum_{j=1}^k \widehat p_{n,j} a_j.$  Another key result from \citet{JankowskiDiscr2013}  is the following statement. 
+
+\begin{lemma}
+Suppose that the grid values (or interval boundaries) $a_1, \ldots, a_{k+1}$ are such that
+\begin{eqnarray*}
+a_{j+1}-a_j &=& \delta >0
+\end{eqnarray*}
+for some $\delta \in \RR_+$ and for all $j=1, \ldots, k$ (where we can allow for $k=\infty$ in this statement).   We refer to this as a ``uniform grid". If $f$ is a log-concave density with
+$p_j=\int_{a_j}^{a_{j+1}}f(x)dx$  and $\sum_j p_j = 1$ then $\{p_j\}$ is a discrete log-concave probability mass function.
+\end{lemma}
+It follows that, if we observed only the grouped version of IID log-concave data, then, as long as the grouping is on a uniform grid, the resulting probabilities $p_i$ will be discretely log-concave.   Of course, the reverse is not true.   That is, if the grouped $p_i$ is discrete log-concave, we cannot guarantee that the density prior to grouping is also log-concave.   More importantly, if we assume that the ungrouped density is log-concave, given the grouped probability mass function, we cannot uniquely recover the ungrouped density function. 
+
+%x=-0.12875,\:y=0.312,\:z=\frac{4.5615}{18}
+%x=-\frac{2}{15},\:y=\frac{1}{3},\:z=\frac{41}{180}
+
+\begin{lemma}\label{lem:unID}
+Suppose that $a_1 < \ldots < a_{k+1}$ is a uniform grid.   Let 
+\begin{eqnarray}\label{line:defrelationship}
+p_j&=&\int_{a_j}^{a_{j+1}} f(x)dx
+\end{eqnarray}
+where $p=\{p_j\}$ is a discrete log-concave probability mass function.   Then, for a fixed $p,$ there can be more than one log-concave density $f$ satisfying $\eqref{line:defrelationship}$.
+\end{lemma}
+The above lemma is proved by example.  Define two densities $f_1$ and $f_2$ 
+\begin{eqnarray*}
+f_1(x) &=& -\frac{8}{59}\, x^2 + \frac{20}{59}\,x + \frac{41}{177} \ \ \ \ \text{if } \ \ 0\leq x \leq 3,\\\\
+f_2(x) &=& \left\{
+\begin{array}{ll}
+     \frac{14}{59} \,x + \frac{15}{59} & \ \ \text{if } \ \ 0 \leq x < 1 \\\\
+    -\frac{8}{59}\,x + \frac{37}{59}  & \ \ \text{if } \ \ 1 \leq x < 2 \\\\
+    -\frac{1}{59}\,x + \frac{53}{59} & \ \ \text{if } \ \ 2 \leq x \leq 3
+\end{array} \right.
+ \end{eqnarray*}
+Clearly, the densities have the same support and both are log-concave.   Furthermore, a quick calculation reveals that $p_1=\int_0^1 f_i(x)dx = 21/59, p_2=\int_1^2 f_i(x)dx = 25/59$ and $p_3=\int_2^3 f_i(x)dx = 13/59$ for both $i=1$ and $i=2.$
+
+Lemma~\ref{lem:unID} implies that our stated problem of recovering the log-concave density $f$ from the multinomial observations $n_1, \ldots, n_k$ is unidentifiable.  We will return to this issue in Section~\ref{sec:consistent}.   \comC{How does this connect with Section 3.2? After saying f is unidentifiable, can we add something to end on a happy note?}
+
+\comC{Here we could again add a sentence giving a glimpse of what's coming next, making this link between the current and next section.}
+
+\bigskip
+
+\subsection{Mean Recovery}
+
+A key component of our work is to first estimate the true mean of the unobserved data. We do this by assuming that the data follow a Gaussian distribution and applying the EM algorithm, as in \citet{mclachlan1988fitting,teimouri2021algorithm,Zahra2022}. Although Gaussian densities are log-concave, we expect the Gaussian assumption to be incorrect in general. Nevertheless, the motivation for using this approach is that, under the Kullback--Leibler (KL) divergence, the Gaussian density $g$ closest to a fixed density $f_0$ is the Gaussian density with mean $\mu_0=\int x f_0(x)\,dx$. Recall that the KL divergence is defined as
+\begin{eqnarray*}
+\rho_{KL}(g\vert f_0) &=& \int f_0 \log f_0 \, dx - \int f_0 \log g \, dx.
+\end{eqnarray*}
+For a log-concave density, the first term $\int f_0 \log f_0 \, dx$ exists. Therefore, minimizing the KL divergence over some class of densities $g\in \mathcal G$ is equivalent to minimizing the second term. Taking $g=g_\mu$ to be a Gaussian density with mean $\mu$ and fixed variance $\sigma^2>0,$ we can calculate
+\begin{eqnarray}\label{line:KL}
+-2 \int f_0(x) \log g_{\mu}(x)dx &=& -\frac{1}{\sigma^2}\int (x-\mu)^2f_0(x)dx - \log \sigma^2 +c,
+\end{eqnarray}
+for some constant $c.$ Minimizing this expression with respect to $\mu$ yields the result. We assume that the variance is known and therefore suppress its dependence in the notation. Because the data are grouped, the above relationship no longer holds exactly, even asymptotically. However, the error due to grouping is quantifiable as we demonstrate in what follows. \comC{I added this part saying that we will show what we mean by quantifiable in what comes next, does that make sense?}
+
+The log-likelihood for the grouped data under IID sampling and assuming a Gaussian density is given by 
+\begin{eqnarray}\label{line:loglik}
+\ell_n(\mu) &=& \sum_{j=1}^k p_{n,j} \ \log \int_{a_j}^{a_{j+1}}  g_{\mu}(x)dx. 
+\end{eqnarray}
+Note also the mild abuse of notation as the log-likelihood depends on the data (via the empirical weights $\{p_{n,j}\}$) as well as the pre-defined grid $\{a_j\}$.  The partial derivatives of $\ell_n(\mu)$ can be calculated easily as 
+\begin{eqnarray*}
+\partial_\mu \ell_n(\mu) & = & \sum_{j=1}^k p_{n,j} \frac{\int_{a_j}^{a_{j+1}}  \frac{x-\mu}{\sigma} g_{\mu}(x)dx}{\sigma  \int_{a_j}^{a_{j+1}}  g_{\mu}(x)dx} \ \ = \ \ \sum_{j=1}^k p_{n,j} \frac{\int_{\alpha_j}^{\alpha_{j+1}}  u \phi(x)dx}{ \int_{\alpha_j}^{\alpha_{j+1}}  \phi(x)dx}
+\end{eqnarray*}
+where $\alpha_j=(a_j-\mu)/\sigma$ for $j=1, \ldots, k+1.$  We also use $\phi$ to denote the density of the standard normal random variable. 
+Let $f_0$ denote the true log-concave density of the unobserved data $X_1, \ldots, X_n.$  Our first result is the following.
+
+\begin{theorem}\label{thm:mle_exists}
+Assume that $\delta<2\sigma$.  The maximizer $\widehat \mu_n$ of the log-likelihood \eqref{line:loglik} exists and is unique. Furthermore, as $n\rightarrow\infty,$ $\widehat \mu_n\rightarrow \widehat \mu_0,$ where $\widehat \mu_0$ is the unique solution to the equation
+\begin{eqnarray*}
+s_0(\mu) \ \ \equiv \ \   \sum_{j=1}^k p_{0,j} \frac{\int_{a_j}^{a_{j+1}}  \frac{x-\mu}{\sigma} g_{\mu}(x)dx}{\int_{a_j}^{a_{j+1}}  g_{\mu}(x)dx} &=& \sum_{j=1}^k p_{0,j} \frac{\int_{\alpha_j}^{\alpha_{j+1}}  u \phi(x)dx}{\sigma  \int_{\alpha_j}^{\alpha_{j+1}}  \phi(x)dx} \ \ = \ \ 0,
+\end{eqnarray*}
+where $p_{0,j}=\int_{a_j}^{a_{j+1}}f_0(x)dx.$
+\end{theorem}
+From \eqref{line:loglik}, we obtain the (modified) score function
+\begin{eqnarray*}
+s_n(\mu)&=& \partial_\mu \ell(\mu).
+\end{eqnarray*}
+%The constant of $2$ has been added to simplify some calculations later.  
+It is possible to verify that the equation in the above theorem is simply the score function used to minimize the Kullback-Liebler divergence between the probability mass function $p_{0,j}$ and $\int_{a_j}^{a_{j+1}}g_{\mu}(x)dx$.
+
+\comC{In Theorem 5, should $\delta= |a_{j+1}-a_j|$ instead of $\delta=a_{j+1}-a_j$? We use this term with absolute value in Section 3. I guess it depends if it is clear that $a_1 < a_2 < \ldots < a_{k+1}$. Can we make it consistent? }
+
+\begin{theorem}\label{thm:mean_reco}
+Let $a_j, j=1, \ldots, k+1$ denote a uniform partition with $\delta=a_{j+1}-a_j,$ for all $j.$  Then, as $\delta\rightarrow 0,$ we have that $\widehat \mu_0 \rightarrow \mu_0.$ Furthermore, for a fixed uniform partition, we have that there exists an $N=N(\omega),$ such that for all $n\geq N(\omega),  \ \ \vert\mu_0 - \widehat \mu_n\vert \ \ \leq \ \ \delta.$   Furthermore, 
+\begin{eqnarray*}
+\vert\mu_0 - \widehat \mu_0\vert \ \ \leq \ \ \delta. %&&\vert\sigma^2_0 - \widehat \sigma^2_0\vert\ \ \leq \ \ 6\delta^2.
+\end{eqnarray*}
+%Moreover, there exists an $N=N(\omega),$ such that for all $n\geq N(\omega),  \ \ \vert\mu_0 - \widehat \mu_n\vert \ \ \leq \ \ \delta.$  \comH{Think that one through a little bit!}
+\end{theorem}
+This last result is key to our mean recovery method.  We will use the EM algorithm (described in detail in Appendix~\ref{appendix:EM}) to find the MLE associated with \eqref{line:loglik}.   The two theorems above state that this MLE exists and is unique, and converges to the true population mean (without grouping)  as the sample size grows and the grouping becomes more refined.  
+
+\comC{Are the theorem proofs in the Appendix?}
+
+Lastly, we note that the EM algorithm works as expected and finds the unique MLE.
+
+
+\begin{lemma}\label{lem:mle_em}
+The EM algorithm as described in the Appendix~\ref{appendix:EM} maximizes the log-likelihood in \eqref{line:loglik}.
+\end{lemma}
+
+
+
+
+
+
+
+
+
+
+%\comH{Add a discussion of condition and how to check it! Furkan - can you see if this makes a difference practically?  Furkan writes a remark here.}
+
+%\comH{HJ: Look at $2\delta$ plot results from FD.}
+
+
+
+%https://journals.sagepub.com/doi/abs/10.1177/1471082X0800800204
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Main Method}\label{method}
+
+\comC{Again, we need to decide on the name/acronym for our method. Is it going to be ALCDE?}
+
+The ALCDE method combines the mean recovery approach with log-concave distribution estimation.  As above, let $\widehat \mu_n$ denote the mean estimated using the EM algorithm under the Gaussian assumption.  We also smooth the empirical probabilities $p_{n,j}$ to obtain a discrete log-concave distribution instead. Once we have these two components, we generate continuous random variables with mean $\widehat \mu_n$ that have a ``discretized" distribution matching the log-concave smoothed $p_{n,j}$ probabilities.   Details are given below.
+
+
+%\comH{add link to appendix with other methods}
+
+%Our method begins with a mean recovery step as discussed in the previous section.   The estimated mean will be denoted as $\widehat \mu_n$ below.   Furthermore, our approach relies on an initial step where the discrete log-concave probability mass function MLE is computed.   This is done using the R package \texttt{logconDiscr()}.   In what follows, the resulting estimated mass function is denoted as $\widehat p_n.$
+
+
+\begin{figure}[p]
+    \centering
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n100.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n200.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n1000.pdf}\\
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n100_log.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n200_log.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n1000_log.pdf}\\
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n100_CDF.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n200_CDF.pdf}
+\includegraphics[width=0.32\textwidth, height=0.25\textheight]{New_plots/Examples/gamma_eg_n1000_CDF.pdf}\\\caption{Example of the log-concave $\widehat f_n^{smooth}$ recovered from IID samples from a gamma distribution with shape=6 and rate=1 (top row).  The logarithm of $\widehat f_n$ is given in the middle row, and the associated cumulative distribution functions are in the bottom row.  The grouped interval width is equal to one in all examples and is shown via the light gray vertical grid in all plots.   From left to right the sample sizes are $n=100, 200, 1000$. For comparison, the purple line denotes the log-concave MLE assuming that the complete data (i.e. without grouping) was observed. In the above, the range of the $x$--axis is always the interval $[0,15]$,   The $y$--axis range is $[0,0.25]$ for the densities (top row), $[-10,2]$ for the log-densities (middle row) and $[0,1]$ for the cumulative distribution functions (bottom row).}\label{fig:example_gamma}
+\end{figure}
+
+
+The algorithm begins with the observed values of $p_{n,j}, j=1\ldots, k$, over the intervals given by $a_1, \ldots, a_{k+1}.$   Let $\delta = |a_{j+1}-a_j|,$ and recall that this is uniform.  
+\begin{enumerate}
+     \item  Maximize the log-likelihood for grouped data given in \eqref{line:loglik} to obtain $\widehat \mu_n$.  In the density $g_{\mu},$ choose $\sigma$ such that $\delta<2\sigma.$
+   \item  Maximize the (modified) log-likelihood function
+   \begin{eqnarray*}
+   \frac{1}{n} \sum_{i=1}^k p_{n,j} \varphi_i -\sum_{i=1}^k e^{\varphi_i}
+   \end{eqnarray*}
+   over all discretely concave functions $\varphi.$  Denote the maximizer as $\widehat \varphi_n,$ and set $\widehat p_n=e^{\widehat \varphi_n}$. The resulting $\widehat p_n$ is a log-concave probability mass function.   Note that this step is easily completed using the R package \texttt{logConDiscr()}.   %The mass function $\widehat p_n$ is log-concave discrete.
+    \item  
+    \begin{itemize}
+    \item[--] Let $Y_{n,\delta}$ denote the random variable where $P(Y_{n,\delta} = a_j) = \widehat p_{n,j}, j=1, \ldots, k.$  
+     \item[--] Let $ Z_{n,\delta}$ denote a continuous random variable taking values in $[0, \delta)$ and mean given by $\widehat \mu_n - \sum_{j=1}^k p_{n,j} a_j.$   
+     \item[--] Finally, define $X_{n,\delta}$ to be the convolution of $ Y_{n,\delta}$ and $ Z_{n,\delta}.$    
+    \end{itemize}
+    
+   With these definitions, we can now define our final step.   
+\begin{enumerate}
+\item Generate $B$ independent samples of $X_{n,\delta}: X_{n,\delta}^b, b=1, \ldots, B.$   %In practice, we most often take $B=n.$
+\item Based on $X_{n,\delta}^b, b=1, \ldots, B,$ find the MLE of a log-concave density using \texttt{logcondens()}.   In \texttt{logcondens()}, we can choose the smoothed version of the density estimator or the original version of the estimator.   For more information on this (fully automatic) smoothing step, we refer to \citet{dumbgen2009logcondens} and \citet{chenSam2013}. %\comH{Change notation?  $\widehat f_n^{smooth}$ for smoothed?}
+\end{enumerate}
+\end{enumerate}
+We denote the resulting estimator of the density $f$ as $\widehat f_{n}$ (without smoothing), and $\widehat f_n^{smooth},$ with smoothing.  Although initially the above algorithm may seem complex, the basic idea is simple.  We obtain a log-concave MLE for the grouped data, and ``ungroup" it by finding a log-concave density closest to the convolution of the grouped distribution with a random perturbation.   The perturbation is designed in such a way that both the convolution and the log-concave density have the mean $\widehat \mu_n,$ which is our best guess at the true mean of the unknown density.   Note that although the convolution $X_{n,\delta}$ does not necessarily have a log-concave density, the MLE does exist and is unique.   Moreover, it is consistent.  We refer to \citet{Cule08} for details.  
+
+In Step 3 of the proposed method, there is a considerable choice in the distribution of $Z_{n,\delta}$.   For convenience, we set $Z_{n,\delta}$ to be $\delta Z_n,$ where $Z_n$ is a beta random variable with parameters $\alpha-\beta$ and $\alpha+\beta.$   The value of $\alpha$ is chosen by the user while $\beta=\beta_n$ is selected so that the mean of $X_{n,\delta}$ is $\widehat \mu_n$ from Step~1.  In Figure~\ref{fig:example_gamma}, we compare $\widehat f_n$ with three different values of $\alpha= 0.5, 1, 2.$  We observe that -- at least in this example -- the choice of $\alpha$ does not appear to have a great impact on the resulting estimator.   Furthermore, comparing the proposed estimator based on grouped data to the MLE based on the true (generally unobserved) data, our proposed estimator's performance is largely driven by the quality of the data.  The main loss of information appears to be around the peak of the density. 
+
+
+
+
+In Step 3(b), we choose the smoothed version of the log-concave density estimator as described in \citet{dumbgen2009logcondens}.   It is well known that the maximum likelihood estimator under the log-concave assumption preserves the empirical distribution's mean. This is also true for the smoothed version of the MLE.  Therefore, if $B$ chosen to be large, the mean of the estimator $\widehat f_n$ can be made arbitrarily close to $\widehat \mu_n.$  It is also well-known that the likelihood estimator under the log-concave assumption underestimates the variance of the empirical distribution.  The smoothed log-concave estimator is a convolution of the original log-concave MLE with a mean-zero Gaussian density with variance so that the variances of the smoothed density and the empirical distribution are equal.  The variance of the estimated density will therefore be close to (for sufficiently large $B$) \begin{eqnarray*}
+\sum_{j=1}^k \widehat p_{n,j} \left(a_j -\sum_{j=1}^k p_{n,j} a_j \right)^2 + \frac{\delta^2}{4} \frac{\alpha^2-\beta^2}{\alpha^2 (2\alpha+1)}
+\end{eqnarray*}
+See also \citet{chenSam2013} for a more general discussion of smoothing of the log-concave density MLE. 
+
+
+\begin{remark}
+The ALCDE algorithm described here is not the only approach we tested; however, in simulations, it performed best. The other methods we tried are given in Appendix~\ref{appendix:all}.
+\end{remark}
+
+
+\subsection{Method implementation}
+
+% The method has been implemented in the R package \comH{Furkan - please fill in some basic details here.   VERY basic}.  The user may choose either the smooth or the non-smooth version of the estimator.  \comF{Done.} \\
+The method has been implemented in the \texttt{R} package \href{https://github.com/FurkanDanisman/DensOLog/tree/package-format}{\texttt{NAME}}. The main function takes as input the observed bin counts and the corresponding grid boundaries, and returns the fitted density estimator described above.  The user may choose either the smoothed or the non-smoothed version of the estimator. The package also provides functions for evaluating the fitted density, distribution function, quantile function, and the EM-based mean estimate, as well as a plotting function for the fitted estimator. The comparison methods used in Section~\ref{subsec:simstudy} are included in the same package for reproducibility.
+
+\subsection{Consistency and compatibility}\label{sec:consistent}
+
+%\comH{FIrm up smoothing; firm up support} \comH{Say that in simulations smoothing preformed worse, but can do it if you want.}
+
+
+We next examine the large sample behaviour of our proposed estimator, both for the cases when $n\rightarrow \infty$ as well as $\delta\rightarrow 0.$   
+%\comH{Figure out how to handle the support - I'm not really allowing for the support to vary...}
+%\comH{The theory is for the actual MLE without smoothing!  But can fix that easily!}
+%Consider the random variable $X_{n,\delta}$ described in the previous section.  
+The following statement follows directly from the results of \citet{JankowskiDiscr2013}.
+\begin{lemma}\label{lem:discrete_part}
+Consider the probability mass function $\{p_{0,j}\}.$  Define $\widehat p_0$ as $\widehat p_0=e^{\widehat \varphi_0},$ where $\widehat \varphi_0$ is the discretely concave function which maximizes 
+\begin{eqnarray*}
+\sum_j \varphi_{0,j} p_{0,j} - \sum_j e^{\varphi_{0,j}} p_{0,j} +1.
+\end{eqnarray*}
+Then $\widehat p_0$ exists and is unique, and satisfies $\sum_j \widehat p_{0,j} a_j = \sum_j p_{0,j} a_j$.   Moreover, if $p_{0}$ is discretely log-concave, then $\widehat p_0=p_0.$  Furthermore, as $n\rightarrow \infty,$  $\widehat p_n \rightarrow \widehat p_0,$ almost surely. 
+\end{lemma}
+
+%Next, let $\widehat P_{n,\delta}$ and $\widehat P_\delta$ denote the distributions of $\widehat p_n$ and $\widehat p_0,$ respectively.   
+Next, define $G_{n,\delta}$ to be the cumulative distribution function of the random variable $Z_{n, \delta}.$   We assume that there exists a random variable $Z_\delta$ with cumulative distribution function $G_\delta,$ such that  
+\begin{eqnarray}\label{line:Zcond}
+\int_0^\delta \vert \widetilde G_{n,\delta}-\widetilde G_{\delta} \vert(x) dx \rightarrow 0
+\end{eqnarray}
+as $n\rightarrow \infty.$  Note that this is convergence in Mallow's distance.   From \citet[Lemma 8.3]{bickel84}, this implies that  $\widehat \mu_n -\sum_{j=1}^k p_{n,j}a_j = E[Z_{n,\delta}] \rightarrow E[Z_\delta].$   Therefore, $E[Z_\delta]=\widehat \mu_0 -\sum_j a_j p_{0,j},$ from Theorem~\ref{thm:mean_reco}.  Note also that our specific choice of $Z_{n,\delta}$ in the previous section satisfies condition \eqref{line:Zcond}.     Indeed, the distribution of $G_\delta$ is $\delta Z,$ where $Z$ is a beta random variable with $\alpha$ as originally chosen by the user and
+\begin{eqnarray*}
+\beta &=& \alpha \left(\frac{\delta}{\widehat \mu_0 - \sum_j a_j p_{0,j}}-1\right).
+\end{eqnarray*}
+
+
+%e know that $\widehat \mu_n$ converges to a constant $\widehat \mu_0,$ which is close to the true mean of the (unobserved) data.  
+
+%Let $ Z_{\delta}$ denote a continuous random variable taking values in $[0, \delta)$ and mean given by $\widehat \mu_0 - \sum_{j=1}^k p_{0,j} a_j.$  The distribution of $Z_\delta$ should be the same as the distribution chosen in Step 3 of the main method, so that the distribution of $Z_{n, \delta}$ converges to the distribution of $Z_\delta.$   As mentioned previously, we choose $Z_{n, \delta}=\delta Z_n,$ so this is simple to satisfy in this case.  Define $\widetilde P_{\delta}$ to be the distribution of the random variable $Z_{\delta}.$
+
+Finally, let $Q_{n,\delta}$ denote the distribution of the convolution of the distributions $\widehat p_n$ and $G_{n,
+\delta}$ (this is also the distribution of $X_{n,\delta}$ as defined in the previous section).  Similarly, let $Q_{\delta}$ denote the convolution of $\widehat p_0$ and $G_{
+\delta}$. 
+
+
+%It follows from the results in \citet{JankowskiDiscr2013} that the random variable $X_{n,\delta}$ converges in distribution to the random variable  $X_{\delta}$ given by the convolution of $Y_{\delta}$ and $Z_\delta$ where $ Y_\delta$ has probability mass function given by  $P(Y_{\delta} = a_j) = p_{0,j}, j=1, \ldots, k$; while $Z_\delta$ is the re-scaled random variable of Step 3, however the mean of $X_\delta$ is now $\widehat \mu_0.$  \comH{NOpe - the writing here needs to be fixed up!  Also, add misspecification!}
+
+  
+
+
+
+
+
+%Let $Y_{n,\delta}$ denote the variable given by $Y_n=a_i$ when $X\in[a_i, a_{i+1}).$  Let $\widehat X_{n,\delta}=Y+Z_\delta,$ where $Y$ and $Z$ are independent and $Z$ has a fixed distribution such that $E[\widehat X]=\widehat \mu_0$ from Theorem~\ref{thm:mle_exists}.  We also assume that $Z(\omega)\in [0,\delta).$  
+
+
+%For a fixed log-concave probability mass function $p_i, i=1, \ldots, k,$ recall $\mathcal S(p)$ denotes the set of all log-concave densities ``compatible" with $p.$
+
+%By \citet[ADD Theorem REF]{Cule08}, we have that as $n\rightarrow \infty$ the estimator INVENT notation converges to the KL divergence.   Now, we need to show that this is compatible!!!!  To accomplish this, would need to show that the grid points are also touch points of the CDF.   
+
+
+\begin{theorem}\label{thm:projection}
+Let $\widehat f_0$ denote the closest log-concave density to the distribution $Q_\delta$ in the sense of Kullback-Liebler divergence.   That is, the density $\widehat f_0$ is the unique log-concave density which minimizes 
+\begin{eqnarray*}
+\int \varphi dQ_\delta - \int  e^\varphi dQ_\delta +1,
+\end{eqnarray*}
+over all concave functions $\varphi.$   Denoting the minimizer as $\widehat \varphi_0,$ we have that $\widehat f_0 = e^{\widehat \varphi_0}.$
+With $\delta$ fixed, as $n\rightarrow \infty$, the density estimator $\widehat f_n$ converges to $\widehat f_0$.   That is, 
+\begin{eqnarray*}
+\limsup_{n} \int_{-\infty}^{\infty} |\widehat f_n-\widehat f_0|(x)dx  &= & 0.
+\end{eqnarray*}
+\end{theorem}
+This result relies heavily on \citet[Theorem 2.15]{DSS2011}, where log-concave projections are shown to be continuous in Mallows' distance.  As a corollary, we also obtain consistency as $\delta$ decreases.
+
+\begin{corollary}\label{cor:cons}
+Suppose that the generating density $f_0$ is log-concave.  Then, as $n\rightarrow \infty$ and $\delta\rightarrow 0,$ the density estimator $\widehat f_n$ is consistent.   That is, 
+\begin{eqnarray*}
+\limsup_{\delta} \limsup_n \int_{-\infty}^{\infty} |f^*_n-f_0|(x)dx  &= & 0,
+\end{eqnarray*}
+almost surely, for $f^*_n=\widehat f_n$ or $\widehat f_n^{smooth}.$
+\end{corollary}
+
+\comC{Regarding the remark, can we explain a bit better why we would be interested in the difference between $\widehat f_0$ and $f_0$? I guess I am still confused between these two?}
+
+\begin{remark}
+We have thus shown that our estimator is consistent in $n$ and $\delta.$   Ideally, we would also be able to quantify the difference between $\widehat f_0$ and $f_0$ in the well-specified setting and as a function of $\delta.$  Alas, the proof does not provide such a quantification.  One might also ask if the density $\widehat f_0$ is \emph{compatible} when $f_0$ is log-concave.   We say that $\widehat f_0$ is compatible with $f_0$ if $\int_{a_j}^{a_{j+1}}\widehat f_0(x)dx = \int_{a_j}^{a_{j+1}} f_0(x)dx$ for all $j.$  Simulations imply that this does not hold in general.  % A closer look at ``run" portion of the function shows that 
+%\begin{eqnarray*}
+%\mbox{dist}(\mathcal Q_\delta, \mathcal Q_0)&=& \sum_j p_{0,j}\int_{0}^{\delta} \left|G_{\delta}- F_{\delta,j}\right|(u) du
+%\end{eqnarray*} \comH{define Fj}
+%(where $\mathcal Q_0$ is the distribution of $f_0)$.   
+This is most likely a byproduct of our choice of  $Z_{n,\delta},$ which does not depend on the interval $[a_j, a_{j+1})$.  We feel that the ease of the proposed method trumps any attempts to vary $Z_{n,\delta}.$  Furthermore, the performance of our method is favourable as seen in Section \ref{sec:results}. In Appendix~\ref{appendix:all}, we discuss an alternative estimator that was developed to be compatible.  In practice, however, that estimator performed worse than the ALCDE. 
+\end{remark}
+
+
+
+
+
+
+%\subsection{Misspecification and testing log-concavity}
+
+
+%Use the variance of the discrete estimator vs the empirical distribution?  \comH{add this is in as a comment?  can also mention convergence even if the truth is not log-concave?}
+
+
+\section{Results}
+\label{sec:results}
+
+\comH{TODO: do we like DensOLog?} \\
+\comF{How about: Mean-Adjusted Log-Concave Density Estimation for Grouped Data and call it MALC or MALCD.}
+
+In this section, we present a comprehensive simulation study under various grid widths and sample sizes across multiple data-generating distributions to compare the performance of our method against three kernel-based methods: 
+\begin{enumerate}
+\item BK2002 \citep{BlowerKelsall2002}, 
+\item BinnedNP \citep{binnednp2019}, and 
+\item KernSmooth \citep{KernSmoothPackage}.
+\end{enumerate}
+We note that of these three methods, only BK2002 works on both multivariate and univariate data, while BK2002 and BinnedNP work for non-uniform grids and KernSmooth does not.  
+
+
+Since all three baseline approaches rely on kernel density estimation, their performance depends heavily on bandwidth selection. The specific bandwidth-selection procedures and additional details for each method are provided in Appendix~\ref{appendixF}. For the BK2002 method, no publicly available software implementation is available; therefore, we translated the proposed methodology into an \texttt{R} implementation. For reproducibility, all three baseline methods are included in the \texttt{DensOLog} package and can be called using \texttt{BK2002()}, \texttt{BinnedNP()}, and \texttt{KernSmooth()}.
+
+\subsection{Simulation study}
+\label{subsec:simstudy}
+
+We evaluated the performance of the proposed and compared methodologies under both log-concave (normal, gamma, beta, logistic, Laplace, chi-square, Weibull) and non-log-concave (Student’s $t$, log-normal, Pareto) data-generating distributions. We are interested in how performance scales with different sample sizes and standardized grid widths (defined as the grid width relative to the true standard deviation). Therefore, our simulation study consists of two main scenarios: (1) varying sample sizes ($n \in \{10^2, 10^3, 10^4, 10^5, 10^6\}$) with a fixed standardized grid width ($\delta/\sigma = 0.5$); and (2) varying standardized grid widths ($\delta/\sigma \in \{0.5, 1.0, 1.5, 2.0, 2.5\}$) with a fixed sample size ($n = 10^3$). The full parameters and simulation variables are detailed in Table \ref{table2}. We generated $100$ independent replications for each combination and compare the $L_2$ norm between the true density and its esimator to evaluate performance. 
+
+%For each replication, performance is evaluated using a grid-based approximation to the continuous Euclidean $(L^2)$ distance between the true density $f_0$ and an estimated density $\widehat f_n$. Using the same uniform grid $a_1<\cdots<a_{k+1}$, with grid width $\delta=a_{j+1}-a_j$, we evaluate both densities at the grid boundaries and compute
+%\begin{equation}
+%\label{eq:d2metric}
+%d_2(\widehat f_n,f_0)
+%=
+%\left\{
+%\sum_{j=1}^{k+1}
+%\left(\widehat f_n(a_j)-f_0(a_j)\right)^2\delta
+%+
+%\int_{\mathcal D\setminus [a_1,a_{k+1}]} f_0^2(u)\,du
+%\right\}^{1/2}.
+%\end{equation}
+%The last term accounts for the contribution of the true density outside the numerical grid, where the estimated density is treated as zero. Results are reported in Section~\ref{subsec:simresults}.
+
+
+
+
+\subsubsection{Results}
+\label{subsec:simresults}
+
+
+
+%Figures~\ref{fig:pdfn1} and~\ref{fig:pdfn2} report the results of our simulation study. 
+%simulation results under the sample-size variation scenario. For each data-generating distribution and each method, the figures present boxplots of L2 norms, across the 100 simulated datasets, separately for each sample sizes. 
+%We observe that DensOLog outperforms the three baseline methods for the log-concave gamma and chi-square distributions, as well as the non-log-concave log-normal distribution. For the rest of the distributions, our method shares the top performance, with marginal differences. In summary, out of the ten evaluated distributions, DensOLog achieves superior performance in three, performs competitively in the rest of the seven.   %It is also important to emphasize that, unlike the approaches, our methodology does not require any user inputs or bandwidth selection, demonstrating a more robust and automated performance across the varying underlying distributional shapes and data resolutions.
+
+Figures~\ref{fig:pdfn1} and~\ref{fig:pdfn2} report the results of our simulation study when the sample size varies.    %For each data-generating distribution and each method, the figures present boxplots of the $L_2$ norms across the 100 simulated datasets, separately for each sample size. 
+We observe that DensOLog achieves the lowest errors for the log-concave gamma and chi-square distributions, as well as for the non-log-concave log-normal distribution. For the remaining distributions, DensOLog attains errors that are not meaningfully distinguishable from the minimum errors observed among all methods. Overall, across the ten evaluated distributions, DensOLog either attains the lowest $L_2$ error or shows no visible separation from the lowest observed errors in the boxplots. Importantly, this performance is achieved without requiring user-specified inputs or bandwidth selection, in contrast to the baseline approaches.
+
+\captionsetup[subfigure]{justification=centering}
+\begin{figure}[!htb]
+    \centering
+    \begin{tabular}{c | c c c c}
+        % ---- Column titles ----
+        & \small DensOLog & \small BK2002 & \small BinnedNP & \small KernSmooth \\[1ex]
+        \hline\rule{0pt}{3ex} % Adds a bit of padding below the horizontal line
+        
+        % Row 1
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Normal}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-n-Method4.pdf}} \\[1ex]
+
+        % Row 2
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Beta}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-n-Method4.pdf}} \\[1ex]
+
+        % Row 3
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Gamma}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-n-Method4.pdf}} \\[1ex]
+
+        % Row 4
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Logistic}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-n-Method4.pdf}} \\[1ex]
+
+        % Row 5
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Student's $t$}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-n-Method4.pdf}} \\
+    \end{tabular}
+    
+    \caption{Simulation results under sample size variation ($n \in \{10^2, 10^3, 10^4, 10^5, 10^6\}$) with a fixed standardized grid width ($\delta/\sigma = 0.5$). The plots display the Euclidean ($L^2$) distance between the true and estimated densities for the normal, beta, gamma, logistic, and Student's $t$ distributions across the proposed DensOLog and three baseline methods.}
+    \label{fig:pdfn1}
+\end{figure}
+
+
+\captionsetup[subfigure]{justification=centering}
+\begin{figure}[!htb]
+    \centering
+    \begin{tabular}{c | c c c c}
+        % ---- Column titles ----
+        & \small DensOLog & \small BK2002 & \small BinnedNP & \small KernSmooth \\[1ex]
+        \hline\rule{0pt}{3ex}
+        
+        % Row 0
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Laplace}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-n-Method4.pdf}} \\[1ex]
+
+        % Row 1
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Chi Square}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-n-Method4.pdf}} \\[1ex]
+
+        % Row 2
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Log-Normal}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-n-Method4.pdf}} \\[1ex]
+
+        % Row 3
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Weibull}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-n-Method4.pdf}} \\[1ex]
+
+        % Row 4
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Pareto}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-n-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-n-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-n-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-n-Method4.pdf}} \\
+    \end{tabular}
+    
+    \caption{Simulation results under sample size variation ($n \in \{10^2, 10^3, 10^4, 10^5, 10^6\}$) with a fixed standardized grid width ($\delta/\sigma = 0.5$). The plots display the Euclidean ($L^2$) distance between the true and estimated densities for the Laplace, chi-square, log-normal, Weibull, and Pareto distributions across the proposed DensOLog and three baseline methods.}
+    \label{fig:pdfn2}
+\end{figure}
+
+To provide some intuition for the simulation results, we plot the density estimates for the normal, gamma, chi-square, and Pareto distributions at sample sizes $n \in \{100, 200, 1000\}$ with the standardized grid width fixed at $\delta/\sigma = 0.5$ (see Figure~\ref{fig:comparison_densities}). At smaller sample sizes, DensOLog more closely follows the true density across the evaluated distributions. Although the simulation results indicate that this advantage becomes less pronounced as $n$ increases to $10^4$, $10^5$, and $10^6$, the small-sample advantage remains practically relevant because grouped data are often observed with limited sample sizes in real-world settings.
+
+\begin{figure}[p]
+    \centering
+    \begin{tabular}{c c c c}
+        & \small $n=100$ & \small $n=200$ & \small $n=1000$ \\[0.5ex]
+        \rowlab{Normal} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Norm_100.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Norm_200.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Norm_1000.pdf} \\
+        \rowlab{Gamma} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Gamma_100.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Gamma_200.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Gamma_1000.pdf} \\
+        \rowlab{Chi Square} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_ChiSqr_100.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_ChiSqr_200.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_ChiSqr_1000.pdf} \\
+        \rowlab{Pareto} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Pareto_100.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Pareto_200.pdf} &
+        \includegraphics[width=\densityfigw, height=\densityfigh]{New_plots/Densolog/DensOLog_Pareto_1000.pdf}
+    \end{tabular}
+\caption{Comparison of DensOLog density estimates against true underlying densities. Rows (top to bottom) correspond to the normal, gamma, chi-square, and Pareto distributions. Columns (left to right) correspond to varying sample sizes $n \in \{100, 200, 1000\}$ with the standardized grid width fixed at $\delta/\sigma = 0.5$.}\label{fig:comparison_densities}
+\end{figure}
+
+Figures~\ref{fig:pdfgw1} and~\ref{fig:pdfgw2} report the performance of the proposed method and the baseline approaches as the (standardized) grid-width $\delta$ varies. Across the ten evaluated distributions, DensOLog is either the least sensitive method or exhibits similar sensitivity level to the baseline approaches in nine cases. Specifically, DensOLog shows the most stable performance for the log-concave beta and gamma distributions, comparable sensitivity for seven additional distributions, and greater sensitivity only for the non-log-concave log-normal distribution. These results suggest that DensOLog is a reliable and robust choice for density estimation across a wide range of grid-width settings.  
+
+We end this section with a further two observations:   The DensOLog method allows for both the smoothed and non-smoothed density estimators.   In our simulations, we present only the non-smoothed version.  In the simulations, the smoothed version provided a small improvement but produced occasional numerical errors; therefore, to ensure stable and fully reproducible comparisons, we report only the non-smoothed version.   Secondly, we note that DensOLog is capable of favourable performance even when the log-concave assumption does not hold.   This holds under small or medium sample sizes.   Notably, similar behaviour has been observed previously, see e.g. \citet{Cule08}.
+
+\comH{When paper is closer to its final form, we should play around with the figures and tables so that they appear in as best a placement for reading as possible}
+
+\begin{remark}
+It is natural to ask if it is possible to test if the underlying density is log-concave.  Due to the lack of identifiability, this is not easy.  However, one can use the test described in \citet{chenSam2013} to test if $p_0$ is log-concave or if $\widehat f_0$ is log-concave, giving some information in this direction.   
+\end{remark}
+
+\captionsetup[subfigure]{justification=centering}
+\begin{figure}[!htb]
+    \centering
+    \begin{tabular}{c | c c c c}
+        % ---- Column titles ----
+        & \small DensOLog & \small BK2002 & \small BinnedNP & \small KernSmooth \\[1ex]
+        \hline\rule{0pt}{3ex}
+        
+        % Row 1
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Normal}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Normal-gw-Method4.pdf}} \\[1ex]
+
+        % Row 2
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Beta}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Beta-gw-Method4.pdf}} \\[1ex]
+
+        % Row 3
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Gamma}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Gamma-gw-Method4.pdf}} \\[1ex]
+
+        % Row 4
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Logistic}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Logistic-gw-Method4.pdf}} \\[1ex]
+
+        % Row 5
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Student's $t$}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-t-gw-Method4.pdf}} \\
+    \end{tabular}
+    
+    \caption{Simulation results under grid width variation ($\delta/\sigma \in \{0.5, 1.0, 1.5, 2.0, 2.5\}$) with a fixed sample size ($n = 10^3$). The plots display the Euclidean ($L^2$) distance between the true and estimated densities for the normal, beta, gamma, logistic, and Student's $t$ distributions across the proposed DensOLog and three baseline methods.}
+    \label{fig:pdfgw1}
+\end{figure}
+
+
+\captionsetup[subfigure]{justification=centering}
+\begin{figure}[!htb]
+    \centering
+    \begin{tabular}{c | c c c c}
+        % ---- Column titles ----
+        & \small DensOLog & \small BK2002 & \small BinnedNP & \small KernSmooth \\[1ex]
+        \hline\rule{0pt}{3ex}
+        
+        % Row 0
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Laplace}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Laplace-gw-Method4.pdf}} \\[1ex]
+
+        % Row 1
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Chi Square}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Chisq-gw-Method4.pdf}} \\[1ex]
+
+        % Row 2
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Log-Normal}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Lnorm-gw-Method4.pdf}} \\[1ex]
+
+        % Row 3
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Weibull}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Wei-gw-Method4.pdf}} \\[1ex]
+
+        % Row 4
+        \raisebox{0.08\textwidth}{\rotatebox{90}{\small Pareto}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-gw-Method1.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-gw-Method2.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-gw-Method3.pdf}} &
+        \subfloat{\includegraphics[width=0.21\textwidth]{New_plots/New_simulations_v2/L2-PDF-1-Pareto-gw-Method4.pdf}} \\
+    \end{tabular}
+    
+    \caption{Simulation results under grid width variation ($\delta/\sigma \in \{0.5, 1.0, 1.5, 2.0, 2.5\}$) with a fixed sample size ($n = 10^3$). The plots display the Euclidean ($L^2$) distance between the true and estimated densities for the Laplace, chi-square, log-normal, Weibull, and Pareto distributions across the proposed DensOLog and three baseline methods.}
+    \label{fig:pdfgw2}
+\end{figure}
+
+
+\subsection{Data Analysis}
+\label{subsec:dataanalysis}
+
+Next, we apply our method to a survival data set obtained from the Human Mortality Database (HMD). Specifically, we analyzed age-specific mortality counts from 2010 to 2020 for six countries that span four continents: Canada, the United States, Japan, the Republic of Korea, Norway, and Australia. The data consist of grouped frequencies of deaths, rather than individual-level records, covering ages 0 through 110 in one-year intervals and stratified by sex. The Canadian data set is presented as a demonstration of the structure in Table \ref{table3}.
+
+\begin{table}[ht]
+\centering
+\caption{Human mortality data for Canada in $2010-2020$}
+\begin{tabular}{l@{\hspace{3cm}}ccc}
+\hline
+\textbf{Age} & \textbf{Female} & \textbf{Male} & \textbf{Total} \\
+\hline
+$[0, 1)$ & 8065 & 9834 & 17899 \\
+$[1, 2)$ & 519 & 601 & 1120 \\
+$\vdots$ & $\vdots$ & $\vdots$ & $\vdots$ \\
+$[109, 110)$ & 89 & 7 & 96 \\
+\hline
+\end{tabular}
+\label{table3}
+\end{table}
+
+We first analyzed female and male mortality data separately to assess sex-based differences. Across all six countries, females exhibited higher mortality probabilities at older ages than males, reflecting their greater likelihood of survival to later ages. This is consistent with longer female life expectancy regardless of country characteristics. The corresponding estimates are reported in Figure \ref{fig:malefemale}.
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Canada}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_CAN.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{USA}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_USA.pdf}}
+    \end{minipage}
+    \vfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Japan}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_JPN.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Republic of Korea}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_KOR.pdf}}
+    \end{minipage}
+    \vfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Norway}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_NOR.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Australia}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Mortaility_AUS.pdf}}
+    \end{minipage}
+    \caption{Estimated mortality densities for females and males in selected countries using HMD data from 2010 to 2020. The purple curve represents females and the brown curve represents males.}
+    \label{fig:malefemale}
+\end{figure}
+
+To complement the density estimates, we also examined the corresponding hazard functions. For an estimated density $\hat f_n$ and distribution function $\hat F_n$, the estimated hazard is defined as
+\[
+\hat h(x)=\frac{\hat f_n(x)}{1-\hat F_n(x)}.
+\]
+Unlike the density, which describes the distribution of ages at death, the hazard function represents the age-specific risk of death conditional on survival up to age $x$. Figure \ref{fig:hazard_malefemale} shows that, in Canada and the United States, the female and male hazards do not differ substantially at older ages. However, in Japan, the Republic of Korea, Norway, and Australia, the male hazard is noticeably higher, reaching approximately two to three times the female hazard at the older ages. Overall, these results support the interpretation that males face higher mortality risk.
+
+\comH{Furkan - can you also add plots of the hazard functions?  And add a short paragraph about this too please.}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Canada}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_CAN.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{USA}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_USA.pdf}}
+    \end{minipage}
+    \vfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Japan}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_JPN.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Republic of Korea}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_KOR.pdf}}
+    \end{minipage}
+    \vfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Norway}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_NOR.pdf}}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+	\subfloat[\footnotesize{Australia}\label{bs1:01}]{\includegraphics[scale = 0.20]{New_plots/HMD/Hazard_AUS.pdf}}
+    \end{minipage}
+    \caption{Estimated mortality hazard functions for females and males in selected countries using HMD data from 2010 to 2020. The purple curve represents females and the brown curve represents males.}
+    \label{fig:hazard_malefemale}
+\end{figure}
+
+After examining sex-based differences, we compared the estimated densities across the countries, with the results shown in Figure \ref{fig:total}. At the population level, the distribution of deaths in Japan and Norway peaked at higher ages, with mean ages at death of approximately 80 and 79, respectively. These were followed by Australia, Canada, the Republic of Korea, and the United States, where the density of deaths concentrated at comparatively younger ages. This means, Japan and Norway has the highest life expectancy, whereas United States has the lowest among the compared countries. 
+
+\begin{figure}[h!]
+    \centering
+        \centering
+        \includegraphics[scale = 0.25]{New_plots/HMD/Mortaility_all_2.pdf}
+    \caption{Estimated mortality densities for the total population in selected countries using HMD data from 2010 to 2020.}
+    \label{fig:total}
+\end{figure}
+
+\comH{Student's t - please fix; also densities that aren't named after someone are not capitalized - e.g. normal vs Gaussian} \\
+\comF{For text, I fixed it. But, for figures they are row headings, should they still be lowercase?}
+
+
+\section{Discussion and conclusion}
+\label{sec:discussion}
+
+\comH{remove URLs from references, fix up capitals}
+
+
+We have proposed an \comH{adjusted log-concave density estimation (ALCDE)} density estimator for grouped data when the underlying distribution is assumed to be log-concave. Therefore, in scientific experiments, medical investigations, demographical or social studies, and survival analysis \cite{ferson2004summary, lindsey1998methods, osegueda2002non, zhang2010interval}, where the information about the distribution is limited or lacking completely, our method provides an efficient and robust way to handle grouped data with a broader range of applications. 
+
+
+The main advantage of the proposed estimator is that it is fully automatic, as no bandwidth selection is required.   Notably, performance of the ALCDE is favourable even when the true distribution is misspecified.
+
+The log-concave assumption is a natural one.   Many common distribution families are log-concave (e.g.  Gaussian, gamma, Weibull).  The main restrictions of this family are two-fold:  first, the tails of the distribution are at most exponential, and therefore heavy-tailed distributions are excluded.   Secondly, all log-concave distributions are unimodal.   When the true density is multimodal and complete data is observed, one can use a simple mixture approach to obtain a multimodal estimator.  
+
+Our simulations in Section~\ref{subsec:simresults} show that the ALCDE performs as well or outperforms the main non-parametric competitors.   All of the competitors are kernel-based and require bandwidth selection, whereas the ALCDE is fully automatic.   The current implementation of the ALCDE is limited to the univariate case with a uniform grid-width.   These extensions will be the subject of future work.  There is some hope that an appropriate implementation for a non-uniform grid-width can also be used to improved the performance of the ALCDE presented here when the grid with is large, but implementing an augmentation strategy.  
+
+
+
+%Our study considered univariate data with uniform and non-uniform grid widths from both log-concave and non-log-concave distributions as listed in Table \ref{table2}. Estimations were computed using Algorithm \ref{alg1} and Algorithm \ref{alg2}, as detailed in Appendix \ref{appendixB}.
+
+
+%For ten distinct distributions, we calculated Manhattan ($L^1$) and Euclidean ($L^2$) distances between the true and estimated densities and probability mass functions for various grid widths (number of intervals) and sample sizes, with parameters held constant. 
+
+%The findings suggest that ALCDE is sensitive to changes in grid width. A plausible explanation for this sensitivity is the increase in the complexity of the representative domain as the grid width expands. Specifically, a larger grid width allows for a greater number of possible combinations that result in the probability of the interval. This growth in possibilities could explain the observed positive relationship between grid width and the measured $L^1$ and $L^2$ distances. This causal link is further supported by the consistent behaviour of these distances when estimating the probability mass function across varying grid widths. 
+
+%future work: extend to non-uniform grids (but note that estimation procedures for gropued data paper - lots of nice examples with uniform grid); multivariate version
+
+%also, if grid not fine enough, can improve grid performance via ungrouping data paper - can be used for non-uniform grid as well.
+
+
+
+%Additionally, ALCDE exhibits different convergence patterns for log-concave and non-log-concave distributions as the sample size increases. When the log-concavity assumption is correct, the method demonstrates convergence toward the true probability mass function. However, due to identifiability issues during the recovery process, the density estimation may only approximate the true density with a certain margin of error. These behaviors differ when estimating non-log-concave distributions. While ALCDE remains robust for small sample sizes, the cost of incorrect log-concavity assumptions become more precise as the sample size grows.
+
+%Also, compared to the EM algorithm, ALCDE is more sensitive to grid widths (number of intervals) and performs worse for normally distributed data. However, for non-normal distributions (gamma and chi-square), ALCDE proves to be more robust and efficient, as indicated by the lower $L^1$ and $L^2$ distances and recovery plots. Thus, under the uncertainty of the underlying assumption, ALDCE may be a more viable option.  
+
+%Furthermore, application to a real-life mortality data detailed in Section \ref{subsec:dataanalysis}, illustrates the flexibility and efficiency of our proposed method. This non-parametric approach allows us to explore more topics of interest without constraining data behaviour to a particular distribution. Nevertheless, it still requires a log-concavity assumption to perform well.  
+
+% GOOD 
+%In conclusion, the adjusted log-concave density estimation algorithm for grouped data has its advantages and disadvantages. Under the log-concavity assumption, efficient estimations are produced without requiring further information about the population. However, it remains a robust alternative only under the smaller sample sizes for non-log-concave distributions. Also, the algorithm's susceptibility to grid widths is one of the primary concerns. Nevertheless, despite these drawbacks, in scientific experiments, medical investigations, demographical or social studies, and survival analysis \cite{ferson2004summary, lindsey1998methods, osegueda2002non, zhang2010interval}, where the information about the distributions is limited or lacking completely, our method provides an efficient and robust way to handle grouped data with a broader range of applications. 
+
+%\begin{itemize}
+%    \item higher dimensions ?
+%    \item other stuff???
+%\end{itemize}
+
+
+\appendix
+
+\section{EM algorithm}\label{appendix:EM}
+
+
+For completeness, we include the steps of the EM algorithm used to maximize the log-likelihood $\ell_n(\mu)$ in \eqref{line:loglik}:
+\begin{eqnarray*}
+\ell_n(\mu) &=& \sum_{j=1}^k p_{n,j} \ \log \int_{a_j}^{a_{j+1}}  g_{\mu}(x)dx. 
+\end{eqnarray*}
+Recall also Lemma~\ref{lem:mle_em} which states that the EM algorithm does find the overall MLE.  
+
+
+\begin{algorithm}[h!]
+\caption{EM algorithm}\label{alg:em}
+\begin{algorithmic}
+%\Require $n \geq 0$
+%\Ensure $y = x^n$
+%\State $y \gets 1$
+\State $\eta \gets 10^{-5}$
+\State $\mu_{old} \gets  \sum_{j=1}^k p_{n,j} \, (a_j+a_{j+1})/2$
+\State $\Delta \gets 1$
+\While{$\Delta \geq \eta$}
+\State $\ell_{old} \gets \ell_n(\mu_{old})$
+\State $\mu_{new} \gets \sum_{j=1}^k p_{n,j} E_{g_{\mu_{old}}} [ X \vert X\in [a_j, a_{j+1}) ]$
+\State $\ell_{new} \gets \ell_n(\mu_{new})$
+\State $\Delta \gets |\ell_{new}-\ell_{old}|$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Additional methods}\label{appendix:all}
+
+%We start with a grid and data, compute the empirical weights $p_n.$  
+Although we present only one method in the main manuscript, we devised three different methods to estimate the density $f_0$ overall.  Below, we briefly describe the methods, and show some preliminary simulations explaining why the ultimate method was chosen.  
+
+
+
+All three methods include a mean recovery step as discussed in the previous section.   The estimated mean will be denoted as $\widehat \mu_n$ below.   Furthermore, all three methods rely on an initial step where the discrete log-concave probability mass function MLE is computed.   This is done using the R package \texttt{logconDiscr()}.   In what follows, the resulting estimated mass function is denoted as $\widehat p_n.$
+
+
+\subsection{Method 1}
+
+\begin{enumerate}
+    \item Obtain $\widehat p_n$ using \texttt{logConDiscr()}.   %The mass function $\widehat p_n$ is log-concave discrete.
+    \item Obtain $\widehat \mu_n$ using $\sigma$ which satisfies the condition $\delta <  2 \sigma$.
+    \item Let $\widetilde \varphi_{n,1}$ denote the least concave majorant of the points $(m_j, \log \widehat p_{n,j}), j=1, \ldots, k$ where $m_j = (a_j+a_{j+1})/2.$  We define $\widetilde \varphi_{n,1} = -\infty$ outside the interval $[m_1, m_k].$ Let $\widetilde f_{n,1} (x) = e^{\widetilde \varphi_{n,1}(x)}/\int e^{\widetilde \varphi_{n,1}(x)} dx$ for $x\in \RR.$
+    \item  The density $\widetilde f_{n,1}$ is log-concave with support $[m_1, m_k]$.   Our estimator is then defined as $\widehat f_{n,1}=\widetilde f_{n,1}(x+s)$ where the shift $s$ is defined in such a way so that $\int x \widehat f_{n,1}(x)dx = \widehat \mu_n.$
+\end{enumerate}
+
+\subsection{Method 2}
+
+\begin{enumerate}
+    \item Obtain $\widehat p_n$ using \texttt{logConDiscr()}.   %The mass function $\widehat p_n$ is log-concave discrete.
+    \item Obtain $\widehat \mu_n$ using $\sigma$ which satisfies the condition $\delta <  2 \sigma$.
+    \item  Then obtain a log-concave density $\widehat f_{n,2}(x)$ which satisfies the following
+\begin{enumerate}
+\item It is log concave with piecewise linear log-concave between grid points.
+\item $\widehat p_{n,i}=\int_{a_i}^{a_{i+1}} \widehat f_{n,2}(s)ds$ for $i=1, \ldots, k.$  Note that it follows that the density integrates to one and has support $[a_1, a_{k+1}].$
+\item $\widehat \mu_n = \int_{a_1}^{a_{k+1}} s\widehat f_{n,2}(s)ds.$
+\end{enumerate}
+\end{enumerate}
+\noindent Finding $\widehat f_{n,2}$ involved solving $k+1$ equations in $k+1$ unknowns.   To see this, define $\widehat f_{n,2}(s)=e^{\alpha_i + \beta_i x}$ on $s\in [a_i, a_{i+1}).$   %We also need continuity so that $\lim_{s \uparrow a_i}\widehat f_n(s)=\widehat f_n(a_i).$  
+We also define
+\begin{eqnarray*}
+H_1(\beta)&=& \int_0^\delta e^{\beta s}ds \ \ = \ \ \beta^{-1}(e^{\beta \delta}-1).\\
+H_2(\beta)&=& \int_0^\delta s e^{\beta s}ds\ \ = \ \ \beta^{-2}(e^{\beta \delta}(\beta\delta-1)+1).\\
+\end{eqnarray*}
+%\comH{Furkan: please double check those two formulas for $H_1, H_2$.  And my calculations below as well!}
+
+%We then find that for $i=1, \ldots, k$
+%\begin{eqnarray*}
+%\widehat p_{n,i}&=&\int_{a_i}^{a_{i+1}} \widehat f_n(s)ds\\
+%&=& \widehat f_n(a_i) H_1(\beta_i).
+%\end{eqnarray*}
+%as well as 
+%\begin{eqnarray*}
+%\widehat f_n(a_{i+1})&=& \widehat f_n(a_i) e^{\beta_i\delta},
+%\end{eqnarray*}
+%which follows from continuity. \comH{We could even have $H_0(\beta)=e^{\beta\delta}$.}  
+
+Following some careful algebra, we find that for $i=1, \ldots, k$
+\begin{eqnarray*}
+\widehat p_{n,i}&=& \widehat f_n(a_i) H_1(\beta_i)\\
+&=& \widehat f_n(a_1) H_0\left(\sum_{j=1}^{i-1} \beta_j\right) H_1(\beta_i)
+\end{eqnarray*}
+Lastly, we can show that 
+\begin{eqnarray*}
+\widehat \mu_n &=& \int_{a_1}^{a_{k+1}} s\widehat f_n(s)ds\\
+&=& \sum_{i=1}^k \int_{a_i}^{a_{i+1}} s\widehat f_n(s)ds\\
+&=& \sum_{i=1}^k \widehat f_n(a_i)\left\{a_i H_1(\beta_i)+H_2(\beta_i)\right\}.
+\end{eqnarray*}
+Finally, we end up with $k+1$ equations 
+\begin{eqnarray*}
+\widehat p_{n,i} &=& \widehat f_n(a_1) H_0\left(\sum_{j=1}^{i-1} \beta_j\right) H_1(\beta_i) \ \ i=1, \dots, k\\
+\widehat \mu_n&=& \sum_{i=1}^k \widehat f_n(a_i)\left\{a_i H_1(\beta_i)+H_2(\beta_i)\right\}\\
+&=& \widehat f_n(a_1) \sum_{i=1}^k H_0\left(\sum_{j=1}^{i-1} \beta_j\right) \left\{a_i H_1(\beta_i)+H_2(\beta_i)\right\},
+\end{eqnarray*}
+with $k+1$ unknowns of $\widehat f_n(a_1)$ and $\beta_1, \ldots, \beta_k.$  Note that $\beta_1 \geq \cdots \geq \beta_k$ to ensure log-concavity.  To solve this set of equations we define 
+\begin{eqnarray*}
+e_i  &=& \widehat f_n(a_1) H_0\left(\sum_{j=1}^{i-1} \beta_j\right) H_1(\beta_i)-\widehat p_{n,i} \ \ i=1, \dots, k\\
+e_{k+1}&=& \sum_{i=1}^k \widehat f_n(a_i)\left\{a_i H_1(\beta_i)+H_2(\beta_i)\right\}\\
+&=& \widehat f_n(a_1) \sum_{i=1}^k H_0\left(\sum_{j=1}^{i-1} \beta_j\right) \left\{a_i H_1(\beta_i)+H_2(\beta_i)\right\} -\widehat \mu_n,
+\end{eqnarray*}
+and let $Q=Q(\widehat f_n(a_1), \beta_1, \ldots, \beta_k)=\sum_{j=1}^{k+1}e_j^2.$
+The criterion $Q$ is then minimized \textcolor{red}{ over the space blah using blah TODO}.  %\comH{So Furkan - can you see about (a) triple checking my math and (b) finding a solver for this?}.
+
+\subsection{Method 3}
+
+\begin{enumerate}
+    \item Obtain $\widehat p_n$ using \texttt{logConDiscr()}.   %The mass function $\widehat p_n$ is log-concave discrete.
+    \item Obtain $\widehat \mu_n$ using $\sigma$ which satisfies the condition $\delta <  2 \sigma$.
+    \item  Let $\widehat Y$ denote the random variable where $P(\widehat Y = a_j) = \widehat p_{n,j}, j=1, \ldots, k.$   Let $\widehat Z$ denote a continuous random variable taking values in $[0, \delta)$ and mean given by $\widehat \mu_n - \sum_{j=1}^k p_{n,j} a_j.$   Finally, define $\widehat X$ to be the convolution of $\widehat Y$ and $\widehat Z.$   Note that it follows from \citet{JankowskiDiscr2013} that $\sum_{j=1}^k p_{n,j} a_j=\sum_{j=1}^k \widehat p_{n,j} a_j.$  Then
+\begin{enumerate}
+\item Generate $B$ independent samples of $\widehat X: \widehat X_b, b=1, \ldots, B.$   In practice, we most often take $B=n.$
+\item Based on $\widehat X_b, b=1, \ldots, B,$ find the MLE of a log-concave density using \texttt{logcondens()}.   Let the estimator denote $\widehat f_{n,3}.$ 
+\end{enumerate}
+\end{enumerate}
+
+%\subsection{Initial comparison of methods}
+
+
+
+
+
+
+\section{Proofs}\label{appendix:proofs}
+
+
+
+\noindent \begin{proof}{Proof of Theorem~\ref{thm:mle_exists}.}
+To begin, note that $\sum_{j=1}^k p_{n,j}a_{j} \leq \widehat \mu_n \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$  This follows since $\widehat \mu_n$ is a zero of the score function and hence 
+\begin{eqnarray*}
+\mu &=& \sum_{j=1}^k p_{n,j} \frac{\int_{a_j}^{a_{j+1}}x g_{\mu}(x)dx}{\int_{a_j}^{a_{j+1}} g_{\mu}(x)dx}
+\end{eqnarray*}
+when $\mu = \widehat \mu_n,$ from which the statement follows.
+
+Let $\lfloor X \rfloor$ denote the random variable $X$ rounded down within the grid (i.e. $\lfloor X \rfloor = \delta \lfloor X/\delta \rfloor$) and let $\lceil X \rceil$ denote the random variable $X$ rounded up within the grid.   Then, as $n\rightarrow \infty,$ by the strong law of large numbers, $\sum_{j=1}^k p_{n,j}a_{j}\rightarrow E[\lfloor X \rfloor]$ almost surely, and $\sum_{j=1}^k p_{n,j}a_{j+1}\rightarrow E[\lceil X \rceil]$ almost surely.  Fix $\eta>\delta>0$.  It therefore follows that there exists an $N$ almost surely, such that $\widehat \mu_n \in [\mu_0-\eta,  \mu_0+\eta]$ for all $n\geq N.$
+
+
+We next derive the second derivative of the score function.    Here, we will make use of several identities.   First,
+\begin{eqnarray*}
+\int_a^b z^2 \phi(z)dz &=& -z\phi(z) \vert_a^b + \Phi(z) \vert_a^b,
+\end{eqnarray*}
+which can be verified using integration by parts (noting that $\phi'(z)=-z\phi(z)$).  %A similar calculation gives 
+%\begin{eqnarray*}
+%\int_a^b z^3 \phi(z)dz &=& -z^2\phi(z) \vert_a^b + 2\int_a^b z \phi(z)dz,
+%\end{eqnarray*}
+Moreover, 
+\begin{eqnarray}\label{line:Gauss_ID1}
+\int_{a}^{b}z\phi(z)dz &=& - \left\{ \phi(b)-\phi(a)\right\}.
+\end{eqnarray}
+Here, $\Phi$ is the cumulative distribution function of the standard normal.  Using these two identities, we find 
+\begin{eqnarray*}
+\partial_{\mu \mu} \ell(\mu) &=& \sum_{j=1}^k p_{n,j} \ \frac{\sigma^{-1}\left(\alpha_{j+1}\phi(\alpha_{j+1})-\alpha_{j}\phi(\alpha_{j})\right)\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)+\sigma^{-1}\left(\phi(\alpha_{j+1})-\phi(\alpha_{j})\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\\
+&=&\sigma^{-1} \ \sum_{j=1}^k p_{n,j} \ \frac{\left(\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)-\int_{\alpha_{j}}^{\alpha_{j+1}} z^2\phi(z) dz\right)\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)+\left(\int_{\alpha_{j}}^{\alpha_{j+1}} z\phi(z) dz\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\\
+&=&\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ \left\{\frac{\int_{\alpha_{j}}^{\alpha_{j+1}} z^2\phi(z) dz}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)}-\frac{\left(\int_{\alpha_{j}}^{\alpha_{j+1}} z\phi(z) dz\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\right\}\right\}\\
+&=& \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ E[Z^2|Z \in [\alpha_{j},\alpha_{j+1})]-E[Z|Z \in [\alpha_{j},\alpha_{j+1})]^2\right\}\\
+&=& \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}
+\end{eqnarray*}
+Now, using Popoviciu's inequality, \citep{poppy}, we find that 
+\begin{eqnarray}\label{line:pop}
+\partial_{\mu \mu} \ell(\mu) &= &\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}\notag\\
+&\geq & \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ \left( \frac{\delta}{2\sigma}\right)^2\right\}\notag\\
+&=& \sigma^{-1} \left\{1-\delta^2/4\sigma^2\right\} > 0,
+\end{eqnarray}
+as long as $\delta <2\sigma .$  What we have shown is that $\ell(\mu)$ has a positive second derivative everywhere (on the condition that $\delta<2\sigma$) and this implies that $\ell(\mu)$ has a unique maximum.  Note that replacing $p_{n,j}$ with $p_{0,j}$ in the above calculations shows that $s_0(\mu)$ has a unique solution.  
+
+Moreover, since variance is positive, we have that 
+\begin{eqnarray*}
+\partial_{\mu \mu} \ell(\mu) &= &\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}
+\ \ \leq \ \ 1/\sigma,
+\end{eqnarray*}
+from which it follows (along with \eqref{line:pop}) that 
+\begin{eqnarray*}
+\left\vert \partial_{\mu \mu} \ell(\mu) \right\vert &\leq & 1/\sigma
+\end{eqnarray*}
+The same also holds for $s_0(\mu),$ that is $s_0(\mu)$ has a bounded first derivative uniformly in $\mu.$  
+
+Now, consider the class of functions defined as 
+\begin{eqnarray*}
+\mathcal M &=&\left\{\left. m_j(\mu) \equiv \frac{\int_{\alpha_j}^{\alpha_{j+1}}  u \phi(x)dx}{  \int_{\alpha_j}^{\alpha_{j+1}}  \phi(x)dx}, j\in 1, \ldots, k \right\vert \mu \in [\mu_0-\eta, \mu_0+\eta]\right\}.
+\end{eqnarray*}
+By repeating the arguments above we have that 
+\begin{eqnarray}\label{line:deriv_bound}
+0\ \ < \ \ \partial_\mu m_j(\mu) &=& 1-var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1}) \ \ \leq \ \ 1,
+\end{eqnarray}
+for $\delta<2\sigma.$
+Fix $\eps>0.$  Let $\{\mu_i; i=1, \ldots, M+1$ denote a partition of $[\mu_0-\eta, \mu_0+\eta].$  We take these to satisfy $\mu_i < \mu_{i+1}$ for all $i.$  Moreover, $|\mu_{i+1}-\mu_i| < \eps.$
+Define $l_j^i= m_j(\mu_i).$   We claim that the functions form a bracketing of the space $\mathcal M.$  First, since the derivative is increasing, we have that for $\mu_i < \mu < \mu_{i+1}$
+\begin{eqnarray*}
+l_j^i < &m_j(\mu)& < l_j^{i+1}.
+\end{eqnarray*}
+Also, the $L_1$ norm between the brackets is 
+\begin{eqnarray*}
+\sum_{j=1}^k p_{0,j} \left\vert l_j^{i+1}-l_j^{i} \right \vert &= & \sum_{j=1}^k p_{0,j} \left\vert  m_j(\mu_{i+1})- m_j(\mu_i) \right \vert \\
+&= & \sum_{j=1}^k p_{0,j} \left\vert  \partial_\mu m_j(\mu^*_{i})\right \vert \vert \mu_{i+1} -\mu_i\vert,
+\end{eqnarray*}
+where $\mu^*_i \in [\mu_i,\mu_{i+1}].$   Applying \eqref{line:deriv_bound} we obtain that $\sum_{j=1}^k p_{0,j} \left\vert l_j^{i+1}-l_j^{i} \right \vert \leq \eps.$
+We have thus shown that a finite bracketing exists \comH{TODO[REF Jon's book]}, and hence we can apply Glivenko-Cantelli to conclude that $s_n(\mu)$ converges to $s_0(\mu)$ uniformly for sufficiently large $n.$  Combining this fact with uniqueness of the solutions, we conclude that $\widehat \mu_n \rightarrow \widehat \mu_0$ almost surely.
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Theorem~\ref{thm:mean_reco}.}
+Consider the population level score function $s_0(\mu)$ as a function of the partition $\{a_i\}.$   We will study what happens as $\delta\rightarrow 0$, where $\delta=a_{i+1}-a_i,$ and does not depend on the index $i.$  Note that
+\begin{eqnarray*}
+s_0(\mu) &=&  \sum_{j=1}^k p_{0,j} \frac{\int_{a_j}^{a_{j+1}}  \frac{x-\mu}{\sigma} g_{\mu, \sigma^2}(x)dx}{\int_{a_j}^{a_{j+1}}  g_{\mu, \sigma^2}(x)dx} \\
+&=&- \sigma^{-1} \left\{\mu - \sum_{j=1}^k p_{0,j} \, E_{gauss}[X|X\in[a_j, a_{j+1})] \right\}.
+\end{eqnarray*}
+
+We will show that as $\delta \rightarrow 0,$ $s_0(\mu)$ converges to 
+\begin{eqnarray*}
+s(\mu) &=&  - \sigma^{-1} \left\{\mu - \int x f_0(x)dx \right\}.
+\end{eqnarray*}
+These is of course the ``score function" associated with the (negative) Kullback-Liebler divergence given in \eqref{line:KL}.  Note that this function has  a zero at $\mu_0=\int x f_0(x)dx.$ Furthermore, we have that 
+\begin{eqnarray*}
+\partial_\mu s (\mu) &=& -\frac{1}{\sigma},
+\end{eqnarray*}
+implying that this solution is unique (alternatively, the minimization of the KL divergence is strictly convex in $\mu$). 
+
+We will now establish the desired convergence.   Let $W_{j}^\delta=E_{gauss}[X|X\in[a_j, a_{j+1})]$ if $X\in [a_j, a_{j+1})]$ and let $W_{j}=a_j$ if $X\in [a_j, a_{j+1})].$   Then the random variables (thinking of them in terms of the random ``outcome" $j$) satisfy $|W_{j}^\delta-W_{j}|\leq \delta$ almost surely.   Therefore, 
+\begin{eqnarray*}
+\sigma \left \vert s_0(\mu)-s(\mu)\right \vert &\leq & \left \vert \sum_{j=1}^k p_{0,j} E_{gauss}[X|X\in[a_j, a_{j+1})] -\sum_{j=1}^k p_{0,j} a_j \right \vert + \left \vert \int x f_0(x)dx -\sum_{j=1}^k p_{0,j} a_j\right \vert \ \ \rightarrow \ \ 0,
+\end{eqnarray*}
+by applying the dominated convergence theorem to the first term on the right-hand side and the Riemann sum approximation to the second term. Moreover, convergence is uniform in $\mu$ for $\sigma$ fixed.  
+
+In the beginning of the proof of Theorem~\ref{thm:mle_exists}, we showed that $\sum_{j=1}^k p_{n,j}a_{j} \leq \widehat \mu_n \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$   Furthermore, since $f_0$ has a continuous log-concave density, we know that $\sum_{j=1}^k p_{j}a_{j} < \mu_0 < \sum_{j=1}^k p_{j}a_{j+1}.$    This implies that there exists an $N=N(\omega)$ such that $\sum_{j=1}^k p_{n,j}a_{j} \leq \mu_0 \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$  Combining this with the same statement about $\widehat \mu_n,$ yields $|\widehat \mu_n - \mu_0| \leq \delta$ for $n\geq N.$  Furthermore, letting $n\rightarrow\infty$ and applying Theorem~\ref{thm:mle_exists}, we obtain that $|\widehat \mu_0 - \mu_0| \leq \delta$.
+
+%Examining the solutions to $s$ and $s_{0},$ we can see furthermore that 
+%\begin{eqnarray*}
+%\vert\mu_0 - \widehat \mu_0\vert  &\leq & \sum_{j=1}^k p_{0,j} \left \vert E_{gauss}[X|X\in[a_j, a_{j+1})]-E_{f_0}[X|X\in[a_j, a_{j+1})]\right \vert \\
+%&=& \sum_{j=1}^k p_{0,j} \left \vert E_{gauss}[X|X\in[a_j, a_{j+1})]-a_j + a_j - E_{f_0}[X|X\in[a_j, a_{j+1})]\right \vert 
+%\ \ \leq \ \ 2\delta.
+%\end{eqnarray*}
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Lemma~\ref{lem:mle_em}.}
+For this proof we follow the theoretical discussion in \citet{EMbook}.  The function $Q(\mu; \mu_*)$ is given as 
+\begin{eqnarray*}
+Q(\mu; \mu_*) &=& - \sum_{j=1}^k p_{n,j} E_{gauss, \mu^*}\left[(X-\mu)^2\vert X \in [a_j, a_{j+1})\right].
+\end{eqnarray*}
+This function is parabolic in $\mu,$ and hence has a unique minimum.   As such, we can easily check that it satisfies the required conditions of \citet{wu83}.   
+\begin{enumerate}
+\item $\sup_\mu Q(\mu; \mu_*) > Q(\mu_*; \mu_*)$ for any $\mu_*$ that is not a local maximizer
+\item  In the proof of  Theorem~\ref{thm:mle_exists} we compute the incomplete data log-likelihood $\ell(\mu)$ \eqref{line:loglik}.   In particular, we show that it is concave on the condition that $\delta<2\sigma.$   Therefore, we satisfy the conditions (3.18)-(3.20) \citep[Section 3.4.2]{EMbook}
+\begin{itemize}
+\item $\mu \in \mathbb R \subset \mathbb R$
+\item $\{\mu \in \mathbb R: \ell(\mu)\geq \ell(\mu_0)\}$ is compact for any $\mu_0$ such that $\ell(\mu_0)>-\infty.$  Indeed, this follows from concavity and continuity
+\item $\ell(\mu)$ is continuous and differentiable on $\mathbb R$
+\end{itemize}
+\end{enumerate}
+It follows that the EM algorithm finds the global maximum of the incomplete likelihood.
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Theorem~\ref{thm:cons}.}
+Recall the definition of Mallow's distance between two distributions (see \cite{DSS2011}).  Let $\mathcal Q_n$ denote the distribution of the random variable $\widehat X$ with CDF $\widetilde F_n$ and let $\widehat \FF_n$ denote the cumulative distribution function of the probability mass function $\widehat p_n.$  Then
+\begin{eqnarray*}
+D_1(Q, Q_n)&=& \int_{-\infty}^{\infty} |F_0-\widehtilde F_n|(t)dt  \ \ = \ \ 
+\sum_{j=1}^k\int_{a_j}^{a_{j+1}} |F_0-\widetilde F_n|(t)dt \\
+&=& \sum_{j=1}^k\int_{a_j}^{a_{j+1}} \left|F_0(a_j)+\left\{F_0(t)-F_0(a_j)\right\}-\widehat \FF_n(a_j)\left\{1+H\left((t-a_j)/\delta \right)\right\}\right|dt\\
+&\leq & \delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) + \sum_{j=1}^k\int_{a_j}^{a_{j+1}} \left|p_{0,j}F_{0|j}(t)-\widehat p_{n,j}(H\left((t-a_j)/\delta \right)\right|dt
+\end{eqnarray*}
+where $F_{0|j}(s)=\left(F_0(a_j+\delta s)-F_0(a_j)\right)/p_0(j)$ and $H$ is the CDF of the random variable $\widehat Z/\delta.$  It follows that 
+
+
+\begin{eqnarray*}
+D_1(Q, Q_n)&\leq& \delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) + \delta \sum_{j=1}^k \int_{0}^1 \left|p_0(j)F_{0|j}(s)-\widehat p_n(j)\HH_n(s)\right|ds\\
+&\leq&\delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) \\
+&& \ \ + \ \ \delta \sum_{j=1}^k \left\{p_0(j) \int_{0}^1 \left|F_{0|j}(s)-\HH_n(s)\right|ds + \left|\int_0^1\HH_n(s)ds\right| \left|p_0(j)-\widehat p_n(j)\right|\right\}\\
+&\leq&\delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j)+2\delta \sum_{j=1}^k p_0(j)  + \delta  \sum_{j=1}^k\left|p_0(j)-\widehat p_n(j)\right| \\
+\end{eqnarray*}
+It follows that 
+\begin{eqnarray*}
+\limsup_n D_1(\mathcal Q, \mathcal Q_n)&\leq&2\delta \sum_{j=1}^k p_0(j)  \ \ \leq \ \ 1,
+\end{eqnarray*}
+and 
+\begin{eqnarray*}
+\limsup_\delta D_1(Q, Q_n)&=&0.
+\end{eqnarray*}
+The result now follows from Theorems~2.2 and 2.15 in \cite{DSS2011}, as well as \citet{chenSam2013}, Theorem 2.
+\end{proof}
+
+\bigskip
+
+
+\noindent \begin{proof}{Proof of Theorem~\ref{thm:mle_exists}.}
+To begin, note that $\sum_{j=1}^k p_{n,j}a_{j} \leq \widehat \mu_n \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$  This follows since $\widehat \mu_n$ is a zero of the score function and hence 
+\begin{eqnarray*}
+\mu &=& \sum_{j=1}^k p_{n,j} \frac{\int_{a_j}^{a_{j+1}}x g_{\mu}(x)dx}{\int_{a_j}^{a_{j+1}} g_{\mu}(x)dx}
+\end{eqnarray*}
+when $\mu = \widehat \mu_n,$ from which the statement follows.
+
+Let $\lfloor X \rfloor$ denote the random variable $X$ rounded down within the grid (i.e. $\lfloor X \rfloor = \delta \lfloor X/\delta \rfloor$) and let $\lceiling X \rceiling$ denote the random variable $X$ rounded up within the grid.   Then, as $n\rightarrow \infty,$ by the strong law of large numbers, $\sum_{j=1}^k p_{n,j}a_{j}\rightarrow E[\lfloor X \rfloor]$ almost surely, and $\sum_{j=1}^k p_{n,j}a_{j}\rightarrow E[\lceiling X \rceiling]$ almost surely.  Fix $\eta>\delta>0$.  It therefore follows that there exists an $N$ almost surely, such that $\widehat \mu_n \in [\mu_0-\eta,  \mu_0+\eta]$ for all $n\geq N.$
+
+
+We next derive the second derivative of the score function.    Here, we will make use of several identities.   First,
+\begin{eqnarray*}
+\int_a^b z^2 \phi(z)dz &=& -z\phi(z) \vert_a^b + \Phi(z) \vert_a^b,
+\end{eqnarray*}
+which can be verified using integration by parts (noting that $\phi'(z)=-z\phi(z)$).  %A similar calculation gives 
+%\begin{eqnarray*}
+%\int_a^b z^3 \phi(z)dz &=& -z^2\phi(z) \vert_a^b + 2\int_a^b z \phi(z)dz,
+%\end{eqnarray*}
+Moreover, 
+\begin{eqnarray}\label{line:Gauss_ID1}
+\int_{a}^{b}z\phi(z)dz &=& - \left\{ \phi(b)-\phi(a)\right\}.
+\end{eqnarray}
+Here, $\Phi$ is the cumulative distribution function of the standard normal.  Using these two identities, we find 
+\begin{eqnarray*}
+\partial_{\mu \mu} \ell(\mu) &=& \sum_{j=1}^k p_{n,j} \ \frac{\sigma^{-1}\left(\alpha_{j+1}\phi(\alpha_{j+1})-\alpha_{j}\phi(\alpha_{j})\right)\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)+\sigma^{-1}\left(\phi(\alpha_{j+1})-\phi(\alpha_{j})\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\\
+&=&\sigma^{-1} \ \sum_{j=1}^k p_{n,j} \ \frac{\left(\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)-\int_{\alpha_{j}}^{\alpha_{j+1}} z^2\phi(z) dz\right)\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)+\left(\int_{\alpha_{j}}^{\alpha_{j+1}} z\phi(z) dz\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\\
+&=&\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ \left\{\frac{\int_{\alpha_{j}}^{\alpha_{j+1}} z^2\phi(z) dz}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)}-\frac{\left(\int_{\alpha_{j}}^{\alpha_{j+1}} z\phi(z) dz\right)^2}{\left(\Phi(\alpha_{j+1})-\Phi(\alpha_{j})\right)^2}\right\}\right\}\\
+&=& \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ E[Z^2|Z \in [\alpha_{j},\alpha_{j+1})]-E[Z|Z \in [\alpha_{j},\alpha_{j+1})]^2\right\}\\
+&=& \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}
+\end{eqnarray*}
+Now, using that paper I just found Proposition 2.6 \textcolor{red}{[ADD PROPER REF, Popoviciu's inequality]} we find that 
+\begin{eqnarray}\label{line:pop}
+\partial_{\mu \mu} \ell(\mu) &= &\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}\notag\\
+&\geq & \sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ \left( \frac{\delta}{2\sigma}\right)^2\right\}\notag\\
+&=& \sigma^{-1} \left\{1-\delta^2/4\sigma^2\right\} > 0,
+\end{eqnarray}
+as long as $\delta <2\sigma .$  What we have shown is that $\ell(\mu)$ has a positive second derivative everywhere (on the condition that $\delta<2\sigma$) and this implies that $\ell(\mu)$ has a unique maximum.  Note that replacing $p_{n,j}$ with $p_{0,j}$ in the above calculations shows that $s_0(\mu)$ has a unique solution.  
+
+Moreover, since variance is positive, we have that 
+\begin{eqnarray*}
+\partial_{\mu \mu} \ell(\mu) &= &\sigma^{-1} \left\{1- \ \sum_{j=1}^k p_{n,j} \ var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1})\right)\right\}
+\ \ \leq \ \ 1/\sigma,
+\end{eqnarray*}
+from which it follows (along with \eqref{line:pop}) that 
+\begin{eqnarray*}
+\left\vert \partial_{\mu \mu} \ell(\mu) \right\vert &\leq & 1/\sigma
+\end{eqnarray*}
+The same also holds for $s_0(\mu),$ that is $s_0(\mu)$ has a bounded first derivative uniformly in $\mu.$  
+
+Now, consider the class of functions defined as 
+\begin{eqnarray*}
+\mathcal M &=&\left\{\left. m_j(\mu) \equiv \frac{\int_{\alpha_j}^{\alpha_{j+1}}  u \phi(x)dx}{  \int_{\alpha_j}^{\alpha_{j+1}}  \phi(x)dx}, j\in 1, \ldots, k \right\vert \mu \in [\mu_0-\eta, \mu_0+\eta]\right\}.
+\end{eqnarray*}
+By repeating the arguments above we have that 
+\begin{eqnarray}\label{line:deriv_bound}
+0\ \ < \ \ \partial_\mu m_j(\mu) &=& 1-var\left(Z\vert Z \in [\alpha_{j},\alpha_{j+1}) \ \ \leq \ \ 1,
+\end{eqnarray}
+for $\delta<2\sigma.$
+Fix $\eps>0.$  Let $\{\mu_i; i=1, \ldots, M+1$ denote a partition of $[\mu_0-\eta, \mu_0+\eta].$  We take these to satisfy $\mu_i < \mu_{i+1}$ for all $i.$  Moreover, $|\mu_{i+1}-\mu_i| < \eps.$
+Define $l_j^i= m_j(\mu_i).$   We claim that the functions form a bracketing of the space $\mathcal M.$  First, since the derivative is increasing, we have that for $\mu_i < \mu < \mu_{i+1}$
+\begin{eqnarray*}
+l_j^i < &m_j(\mu)& < l_j^{i+1}.
+\end{eqnarray*}
+Also, the $L_1$ norm between the brackets is 
+\begin{eqnarray*}
+\sum_{j=1}^k p_{0,j} \left\vert l_j^{i+1}-l_j^{i} \right \vert &= & \sum_{j=1}^k p_{0,j} \left\vert  m_j(\mu_{i+1})- m_j(\mu_i) \right \vert \\
+&= & \sum_{j=1}^k p_{0,j} \left\vert  \partial_\mu m_j(\mu^*_{i})\right \vert \vert \mu_{i+1} -\mu_i\vert,
+\end{eqnarray*}
+where $\mu^*_i \in [\mu_i,\mu_{i+1}].$   Applying \eqref{line:deriv_bound} we obtain that $\sum_{j=1}^k p_{0,j} \left\vert l_j^{i+1}-l_j^{i} \right \vert \leq \eps.$
+We have thus shown that a finite bracketing exists [REF Jon's book], and hence we can apply Glivenko-Cantelli to conclude that $s_n(\mu)$ converges to $s_0(\mu)$ uniformly for sufficiently large $n.$  Combining this fact with uniqueness of the solutions, we conclude that $\widehat \mu_n \rightarrow \widehat \mu_0$ almost surely.
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Theorem~\ref{thm:mean_reco}.}
+Consider the population level score function $s_0(\mu)$ as a function of the partition $\{a_i\}.$   We will study what happens as $\delta\rightarrow 0$, where $\delta=a_{i+1}-a_i,$ and does not depend on the index $i.$  Note that
+\begin{eqnarray*}
+s_0(\mu) &=&  \sum_{j=1}^k p_{0,j} \frac{\int_{a_j}^{a_{j+1}}  \frac{x-\mu}{\sigma} g_{\mu, \sigma^2}(x)dx}{\int_{a_j}^{a_{j+1}}  g_{\mu, \sigma^2}(x)dx} \\
+&=&- \sigma^{-1} \left\{\mu - \sum_{j=1}^k p_{0,j} \, E_{gauss}[X|X\in[a_j, a_{j+1})] \right\}.
+\end{eqnarray*}
+
+We will show that as $\delta \rightarrow 0$ $s_0(\mu)$ converges to 
+\begin{eqnarray*}
+s(\mu) &=&  - \sigma^{-1} \left\{\mu - \int x f_0(x)dx \right\}.
+\end{eqnarray*}
+These is of course the ``score function" associated with the (negative) Kullback-Liebler divergence given in \eqref{line:KL}.  Note that this function has  a zero at $\mu_0=\int x f_0(x)dx.$ Furthermore, we have that 
+\begin{eqnarray*}
+\partial_\mu s (\mu) &=& -\frac{1}{\sigma},
+\end{eqnarray*}
+implying that this solution is unique (alternatively, the minimization of the KL divergence is strictly convex in $\mu$). 
+
+We will now establish the desired convergence.   Let $W_{j}^\delta=E_{gauss}[X|X\in[a_j, a_{j+1})]$ if $X\in [a_j, a_{j+1})]$ and let $W_{j}=a_j$ if $X\in [a_j, a_{j+1})].$   Then the random variables (thinking of them in terms of the random ``outcome" $j$) satisfy $|W_{j}^\delta-W_{j}|\leq \delta$ almost surely.   Therefore, 
+\begin{eqnarray*}
+\sigma \left \vert s_0(\mu)-s(\mu)\right \vert &\leq & \left \vert \sum_{j=1}^k p_{0,j} E_{gauss}[X|X\in[a_j, a_{j+1})] -\sum_{j=1}^k p_{0,j} a_j \right \vert + \left \vert \int x f_0(x)dx -\sum_{j=1}^k p_{0,j} a_j\right \vert \ \ \rightarrow \ \ 0,
+\end{eqnarray*}
+by applying the dominated convergence theorem to the first term on the right-hand side and the Riemann sum approximation to the second term. Moreover, convergence is uniform in $\mu$ for $\sigma$ fixed.  
+
+In the beginning of the proof of Theorem~\ref{thm:mle_exists}, we showed that $\sum_{j=1}^k p_{n,j}a_{j} \leq \widehat \mu_n \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$   Furthermore, since $f_0$ has a continuous log-concave density, we know that $\sum_{j=1}^k p_{j}a_{j} < \mu_0 < \sum_{j=1}^k p_{j}a_{j+1}.$    This implies that there exists an $N=N(\omega)$ such that $\sum_{j=1}^k p_{n,j}a_{j} \leq \mu_0 \leq \sum_{j=1}^k p_{n,j}a_{j+1}.$  Combining this with the same statement about $\widehat \mu_n,$ yields $|\widehat \mu_n - \mu_0| \leq \delta$ for $n\geq N.$  Furthermore, letting $n\rightarrow\infty$ and applying Theorem~\ref{thm:mle_exists}, we obtain that $|\widehat \mu_0 - \mu_0| \leq \delta$.
+
+%Examining the solutions to $s$ and $s_{0},$ we can see furthermore that 
+%\begin{eqnarray*}
+%\vert\mu_0 - \widehat \mu_0\vert  &\leq & \sum_{j=1}^k p_{0,j} \left \vert E_{gauss}[X|X\in[a_j, a_{j+1})]-E_{f_0}[X|X\in[a_j, a_{j+1})]\right \vert \\
+%&=& \sum_{j=1}^k p_{0,j} \left \vert E_{gauss}[X|X\in[a_j, a_{j+1})]-a_j + a_j - E_{f_0}[X|X\in[a_j, a_{j+1})]\right \vert 
+%\ \ \leq \ \ 2\delta.
+%\end{eqnarray*}
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Lemma~\ref{lem:mle_em}.}
+For this proof we follow the theoretical discussion in \citet{EMbook}.  The function $Q(\mu; \mu_*)$ is given as 
+\begin{eqnarray*}
+Q(\mu; \mu_*) &=& - \sum_{j=1}^k p_{n,j} E_{gauss, \mu^*}\left[(X-\mu)^2\vert X \in [a_j, a_{j+1})\right].
+\end{eqnarray*}
+This function is parabolic in $\mu,$ and hence has a unique minimum.   As such, we can easily check that it satisfies the required conditions of \citet{wu83}.   
+\begin{enumerate}
+\item $\sup_\mu Q(\mu; \mu_*) > Q(\mu_*; \mu_*)$ for any $\mu_*$ that is not a local maximizer
+\item  In the proof of  Theorem~\ref{thm:mle_exists} we compute the incomplete data log-likelihood $\ell(\mu)$ \eqref{line:loglik}.   In particular, we show that it is concave on the condition that $\delta<2\sigma.$   Therefore, we satisfy the conditions (3.18)-(3.20) \citep[Section 3.4.2]{EMbook}
+\begin{itemize}
+\item $\mu \in \mathbb R \subset \mathbb R$
+\item $\{\mu \in \mathbb R: \ell(\mu)\geq \ell(\mu_0)\}$ is compact for any $\mu_0$ such that $\ell(\mu_0)>-\infty.$  Indeed, this follows from concavity and continuity
+\item $\ell(\mu)$ is continuous and differentiable on $\mathbb R$
+\end{itemize}
+\end{enumerate}
+It follows that the EM algorithm finds the global maximum of the incomplete likelihood.
+\end{proof}
+
+\bigskip
+
+\noindent\begin{proof}{Proof of Theorem~\ref{thm:projection}.}
+Recall the definition of Mallow's distance between two distributions (see \cite{DSS2011}).  Let $Q_n$ denote the distribution of the random variable $\widehat X$ with CDF $\widetilde F_n$ and let $\widehat \FF_n$ denote the cumulative distribution function of the probability mass function $\widehat p_n.$  Then
+\begin{eqnarray*}
+D_1(Q, Q_n)&=& \int_{-\infty}^{\infty} |F_0-\widehtilde F_n|(t)dt  \ \ = \ \ 
+\sum_{j=1}^k\int_{a_j}^{a_{j+1}} |F_0-\widetilde F_n|(t)dt \\
+&=& \sum_{j=1}^k\int_{a_j}^{a_{j+1}} \left|F_0(a_j)+\left\{F_0(t)-F_0(a_j)\right\}-\widehat \FF_n(a_j)\left\{1+H\left((t-a_j)/\delta \right)\right\}\right|dt\\
+&\leq & \delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) + \sum_{j=1}^k\int_{a_j}^{a_{j+1}} \left|p_{0,j}F_{0|j}(t)-\widehat p_{n,j}(H\left((t-a_j)/\delta \right)\right|dt
+\end{eqnarray*}
+where $F_{0|j}(s)=\left(F_0(a_j+\delta s)-F_0(a_j)\right)/p_0(j)$ and $H$ is the CDF of the random variable $\widehat Z/\delta.$  It follows that 
+\begin{eqnarray*}
+D_1(Q, Q_n)&\leq& \delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) + \delta \sum_{j=1}^k \int_{0}^1 \left|p_0(j)F_{0|j}(s)-\widehat p_n(j)\HH_n(s)\right|ds\\
+&\leq&\delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j) \\
+&& \ \ + \ \ \delta \sum_{j=1}^k \left\{p_0(j) \int_{0}^1 \left|F_{0|j}(s)-\HH_n(s)\right|ds + \left|\int_0^1\HH_n(s)ds\right| \left|p_0(j)-\widehat p_n(j)\right|\right\}\\
+&\leq&\delta \sum_{j=1}^k |F_0-\widehat\FF_n|(a_j)+2\delta \sum_{j=1}^k p_0(j)  + \delta  \sum_{j=1}^k\left|p_0(j)-\widehat p_n(j)\right|.
+\end{eqnarray*}
+Hence, 
+\begin{eqnarray*}
+\limsup_n D_1(Q, Q_n)&\leq&2\delta \sum_{j=1}^k p_0(j) 
+\end{eqnarray*}
+and 
+\begin{eqnarray*}
+\limsup_\delta \limsup_n D_1(Q, Q_n)&=&0.
+\end{eqnarray*}
+The result now follows from Theorems~2.2 and 2.15 in \cite{DSS2011}.
+\end{proof}
+
+\noindent\begin{proof}{Proof of Theorem~\ref{thm:projection}}
+First, note that both distributions  $Q_{n,\delta}$ and $Q_\delta$ have finite first moments.  Moreover, both $Q_{n,\delta}$ and $Q_\delta$ have non-empty convex support (as defined in \citet{DSS2011}) by virtue of their definition.   Hence, \citet[Theorem 2.2]{DSS2011} tells us that the estimator $\widehat f_n$ exists and is unique, and the same is true for $\widehat f_0.$   
+
+Next, we need to show that Mallows' distance (a.k.a. Wasserstein distance) between $Q_{n,\delta}$ and $Q_\delta$ converges to zero.  As we focus on the one-dimensional setting, we take the following definition of Mallows' distance
+\begin{eqnarray*}
+\mbox{dist}(Q_{n,\delta},Q_{\delta}) &=& \int \left| F_{n, \delta} -  F_{\delta} \right|(x) dx,
+\end{eqnarray*}
+where $F_{n,\delta}$ and $F_\delta$ are the cumulative distribution functions of the random variables $X_{n,\delta}$ and $X_\delta,$ respectively.  This quantity can be calculated exactly. 
+\begin{eqnarray*}
+&&\hspace{-2cm}\mbox{dist}(Q_{n,\delta},Q_{\delta}) \notag \\&=& \sum_j \int_{a_j}^{a_{j+1}} \left| F_{n, \delta} -  F_{\delta} \right|(x) dx\notag\\
+&=&\sum_j \int_{a_j}^{a_{j+1}} \left| \widehat F_{n}(a_j) + \widehat p_{n,j} G_{n,\delta}(x-a_j)-  \widehat F_{0}(a_j) + \widehat p_{0,j} G_{\delta}(x-a_j) \right|(x) dx\notag\\
+&\leq & \delta \sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| + \sum_j \int_{0}^{\delta} \left|\widehat p_{n,j} G_{n,\delta}-\widehat p_{0,j} G_{\delta}\right|(u) du\notag\\
+&\leq & \delta \sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| + 2\delta \sum_j \vert \widehat p_{n,j}-\widehat p_{0,j}\vert  +\sum_j \widehat p_{0,j}\int_{0}^{\delta} \left|G_{n,\delta}- G_{\delta}\right|(u) du\notag\\
+&=&\delta \sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| + 2\delta \sum_j \vert \widehat p_{n,j}-\widehat p_{0,j}\vert + \int_{0}^{\delta} \left|G_{n,\delta}- G_{\delta}\right|(u) du. \label{line:keepthisone}
+\end{eqnarray}
+We now have three different terms to work through.   
+
+The first term, given by $\delta \sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right|= \int \left| \widehat F_{n}(x)-\widehat F_{0}(x)\right|dx,$ is simply Mallows' distance between the distributions $\widehat p_n$ and $\widehat p_0$.   To argue that it converges to zero we note that, by \citep[Theorem 3]{JankowskiDiscr2013} we have weak convergence of the distributions $\widehat p_n$ to $\widehat p_0.$  Appealing again to \citet[Lemma 8.3]{bickel84}, it remains to show that $|x|$ is uniformly integrable in $\widehat p_n.$  This follows immediately via Markov's inequality as well as 
+\begin{eqnarray*}
+\sum_j |a_j| \widehat p_{n,j} \leq \sum_j |a_j| p_{n,j},
+\end{eqnarray*}
+as was proved in \citet{JankowskiDiscr2013}.
+
+
+
+The second term, $\sum_j \vert \widehat p_{n,j}-\widehat p_{0,j}\vert$ is the $\ell_1$ norm between the MLE and the projection distribution $\widehat p_0.$  It follows from \citep[Theorem 3]{JankowskiDiscr2013} that this term converges to zero almost surely as $n\rightarrow \infty$.  The third term converges to zero by condition \eqref{line:Zcond}.   
+
+
+
+
+
+%Next, we consider the first term.%, $\sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right|$.   Note that this is the Mallow's distance, or Wasserstein distance, between $\{\widehat p_n\}$ and $\{\widehat p_0\}$, see \citet{gibbsy}.  We can therefore write the following (where the supremum is taken over all $h$ such that $|h(x)-h(y)|\leq |x-y|$)
+%\begin{eqnarray*}
+%\sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| &=& \lim_{N\rightarrow \infty}\left\{\sum_{j=0}^N\left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right|+\sum_{j=-N}^{-1} \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right|\right\}
+%\end{eqnarray*}
+%and we consider each part separately.  Let $\widehat S_n(x)=1-\widehat F_n(x)$ and $\widehat S_0(x)=1-\widehat F_0(x).$  Then 
+%\begin{eqnarray*}
+%\sum_{j=0}^N \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| &=& \sum_{j=1}^N \left|\widehat S_{n}(a_{j})-\widehat S_{0}(a_{j})\right|\\
+%&\leq&\sum_{j=1}^N \left|\widehat S_{n}(a_{j})-\widehat S_{n}(a_{N+1})-\widehat S_{0}(a_{j})+\widehat S_{0}(a_{N+1})\right| +N \left|\widehat S_{n}(a_{N+1})-\widehat S_{0}(a_{N+1})\right|\\
+%&\leq & \delta ^{-1}\sum_{j=1}^N a_j \left|\widehat p_{n}(a_{j})-\widehat p_{0}(a_{j})\right| +N \left|\widehat S_{n}(a_{N+1})-\widehat S_{0}(a_{N+1})\right|.
+%\end{eqnarray*}
+%Similarly, 
+%\begin{eqnarray*}
+%\sum_{j=-N}^{-1} \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| 
+%&\leq&\sum_{j=-N}^{-1} \left|\widehat F_{n}(a_{j})-\widehat F_{n}(a_{-N})-\widehat F_{0}(a_{j})+\widehat F_{0}(a_{-N})\right| +2 N \left|\widehat F_{n}(a_{-N})-\widehat F_{0}(a_{-N})\right|\\
+%&\leq & \delta ^{-1}\sum_{j=-N}^{-1} |a_j| \left|\widehat p_{n}(a_{j})-\widehat p_{0}(a_{j})\right| +2 N \left|\widehat F_{n}(a_{-N})-\widehat F_{0}(a_{-N})\right|.
+%\end{eqnarray*}
+%Therefore, the second term satisfies, 
+%\begin{eqnarray*}
+%\delta \sum_j \left|\widehat F_{n}(a_j)-\widehat F_{0}(a_j)\right| &\leq & \sum_j |a_j|\left|\widehat p_{n}(a_j)-\widehat p_{0}(a_j)\right| + 2\delta \lim_{N\rightarrow \infty} \left\{N\max_{k=N, -N}\left\{|\widehat F_{n}(a_{k})-\widehat F_{0}(a_{k})\right|\right\}.
+%\end{eqnarray*}
+%Now, from \citet[Theorem 4]{JankowskiDiscr2013} as well as \citet[Proposition 2(c)]{CuleEJS}, we find that that there exists a value $\lambda>0$ such that $\sum_j e^{\lambda |a_j|}\left|\widehat p_{n}(a_j)-\widehat p_{0}(a_j)\right|\rightarrow 0$ almost surely.  Using the inequality $e^{|x|}\geq |x|,$ it follows that the second term in \eqref{line:keepthisone} converges to zero almost surely as $n\rightarrow \infty$.  
+\end{proof}
+
+
+\noindent\begin{proof}[Proof of Corollary~\ref{cor:cons}]
+Since the density $f_0$ is log-concave, we know that if $\mathcal Q_0$ is the distribution with density $f_0$ then the closest log-concave density in the KL sense is $f_0.$   Therefore, we can again appeal to \citet[Theorem 2.15]{DSS2011} to prove the result.   Indeed, we have that 
+\begin{eqnarray*}
+\mbox{dist} (Q_{n,\delta}, Q_0) \leq \mbox{dist}(Q_{n,\delta}, Q_\delta)+\mbox{dist} (Q_{\delta}, Q_0),
+\end{eqnarray*}
+and in Theorem~\ref{thm:projection} we have already established that the first term converges to zero in $n.$  It therefore remains to examine the second term.  
+
+To this end, 
+\begin{eqnarray}
+\mbox{dist} (Q_{\delta}, Q_0) &=& \int \vert \widehat F_\delta(x)- F_0(x) \vert dx\notag\\
+&\leq& \delta \sum_j \left|\widehat F_{0}(a_j)- F_{0}(a_j)\right| + 2\delta \sum_j \vert \widehat p_{0,j}-p_{0,j}\vert + \sum_j p_{0,j}\int_{0}^{\delta} \left|G_{\delta}- F_{\delta,j}\right|(u) du, \label{line:delta_calc}
+\end{eqnarray*}
+using an argument similar to that in the proof of Theorem~\ref{thm:projection}, where 
+\begin{eqnarray*}
+F_{\delta,j} &=& \frac{F_0(u)-F_0(a_j)}{F_0(a_{j+1})-F_0(a_j)}, \ \ \ \ 0\leq u \leq \delta
+\end{eqnarray*}
+with $F_0(x)=\int_{-\infty}^x f_0(u)du.$  Now, since $f_0$ is log-concave by assumptions, we know that $p_0$ is discretely log-concave, and hence $\widehat p_0=p_0$ and $\widehat F_0 = F_0.$  Therefore, the first two terms in \eqref{line:delta_calc} are equal to zero.   The last term can be bounded above by $2\delta,$ and also converges to zero as $\delta \rightarrow 0.$
+\end{proof}
+
+\bigskip
+
+
+
+\section{Algorithm for ALCDE}\label{appendixB}
+
+\begin{algorithm}[!htb]
+\caption{Dens-OLog}
+\label{alg:densolog}
+\begin{algorithmic}[1]
+\Require $n_i$, $g$ (grid), $B$ (jitter size), $\alpha>0$
+\Ensure $\widehat f_n$, $\sum_j \widehat{p}_j$, \texttt{Check(Z)}
+\Procedure{Dens-OLog}{$n_i, g, B{=}10000, \alpha{=}2$}
+
+\Statex \textbf{(A) Grouped data \& discrete MLE}
+\State $p_n \gets n_j/n$
+\State $a_j \gets g[-length(g)]$
+\State $y \gets \text{rep}(a_j,\ \text{times}=n_j)$
+\State $y \gets \text{round}(y/(a_j - a_{j-1}))$ \Comment Transform it into discrete integers for \texttt{logConDiscrMLE}
+\State $\textit{mle} \gets \texttt{logConDiscrMLE}(y)$
+\State $\widehat {p} \gets \exp(\textit{mle}.\psi)\big/\sum_j \exp(\textit{mle}.\psi_j)$
+\State $\delta \gets \max_i(g_i-g_{i-1})$
+
+\Statex \textbf{(B) Location calibration (EM-based)}
+\State $\mu_{\text{low}} \gets \sum_i p_{n,i}\, g_{i-1}$ \Comment lower mean bound from bins
+\State $\mu_n \gets \texttt{EM}(n_i, g)$
+\State $\Delta \gets \mu_n - \mu_{\text{low}},\quad \beta \gets 2\alpha\!\left(\Delta/\delta - \tfrac12\right)$
+
+\Statex \textbf{(C) Jittered resampling on the grid}
+\State $y^* \gets \text{sample}(\textit{mle}.x \cdot (a_j - a_{j-1}),\ B,\ \widehat p,\ \texttt{replace}{=}T)$ \Comment Scaling back to the original form
+\State $z^* \gets \delta \cdot \text{rbeta}(B,\ \alpha{+}\beta,\ \alpha{-}\beta)$
+\State $x^* \gets y^* + z^*$
+
+\Statex \textbf{(D) Continuous log-concave fit \& return}
+\State $\widehat f_n \gets \texttt{logConDens}(x^*,\ \texttt{smoothed}{=}TRUE)$
+\State \quad \texttt{Check(Z)} $\gets \min(\alpha{+}\beta,\ \alpha{-}\beta)$
+\State \Return $\{\widehat{f}_n,\ \sum_j \widehat{p}_j,\ \texttt{Check(Z)}\}$
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\section{Baseline Methods}\label{appendixF}
+
+Our method is compared with three nonparametric approaches for estimating an underlying density from binned data. Each comparator is kernel-based and therefore requires bandwidth selection. For each method, we follow the bandwidth-selection procedure and estimation algorithm specified in the original reference, as summarized below.
+
+\subsection{Blower and Kelsall (2002): Nonlinear kernel density estimation for binned data}
+
+\cite{BlowerKelsall2002} proposed a nonlinear kernel density estimator for grouped data, defined as the fixed point of an operator that repeatedly applies kernel smoothing within bins and rescales the result so that the implied bin masses match the observed bin proportions. In our comparison, we implement the estimator using a Gaussian kernel.
+
+\subsubsection*{Bandwidth selection}
+\begin{enumerate}
+\item Generate pseudo-observations as follows. For each bin $j=1,\ldots,k$, draw
+\[
+U_{j1},\ldots,U_{j n_j}\ \stackrel{\text{i.i.d.}}{\sim}\ \mathrm{Unif}(a_j,a_{j+1}],
+\]
+independently across $j$. Define the pooled pseudo-sample
+\[
+\{X_i^{\dagger}\}_{i=1}^{n}
+=\bigcup_{j=1}^k \{U_{j\ell}\}_{\ell=1}^{n_j}.
+\]
+\item Compute the \cite{SheatherJones1991} bandwidth $h$ on the pseudo-sample $\{X_i^{\dagger}\}_{i=1}^n$ using \texttt{bw.SJ} \citep{RStatsBandwidth}. The SJ selector targets the bandwidth that minimizes the asymptotic mean integrated squared error (AMISE) of the kernel density estimator. For the kernel density estimator
+\[
+\hat f_h(x)=\frac{1}{nh}\sum_{i=1}^n K\!\left(\frac{x-X_i^{\dagger}}{h}\right),
+\]
+the AMISE-optimal bandwidth satisfies
+\[
+h=\left(\frac{R(K)}{\mu_2(K)^2\,\widehat{R(f'')}(h)\,n}\right)^{1/5},
+\qquad 
+R(K)=\int K^2(u)\,du,\quad 
+\mu_2(K)=\int u^2K(u)\,du,
+\]
+where $R(f'')=\int\{f''(x)\}^2\,dx$ and $\widehat{R(f'')}(h)$ denotes a plug-in estimate of this curvature functional constructed from the data using pilot kernel estimators of derivatives. In this Sheather--Jones procedure we select the method that computes $h$ by solving this relation as a fixed-point equation in $h$, and the resulting solution is the bandwidth returned by \texttt{bw.SJ}.
+
+\item Repeat this procedure $B$ times and set $h$ to the median of the resulting bandwidths.
+\end{enumerate}
+
+\subsubsection*{Algorithm}
+
+Let $\{x_j\}_{j=1}^k$ denote the centers of a uniform evaluation grid with width $\Delta = a_{j+1} - a_j$ for any $j = 1,\cdots,k$.
+At iteration $t$, the density estimate is represented by the grid values $\{f^{(t)}(x_j)\}_{j=1}^k$.
+For initialization, set
+\[
+f^{(0)}(x_j)=\frac{n_j}{n\,\Delta}\qquad \text{for all } x_j\in (a_j,a_{j+1}),\; j=1,\dots,k,
+\]
+and rescale to integrate to one on the grid,
+\[
+f^{(0)}(x_j)\leftarrow \frac{f^{(0)}(x_j)}{\sum_{r=1}^k f^{(0)}(x_r)\,\Delta}\,,
+\qquad j=1,\dots,k.
+\]
+For $t=0,1,2,\dots$ iterate:
+\begin{enumerate}
+\item For each interval, set $g^{(t)}_j(x_j)=f^{(t)}(x_j)1\{x_j\in (a_j,a_{j+1})\}$ and compute
+\[
+c^{(t)}_j
+= \sum_{j:\,x_j\in (a_j,a_{j+1})} f^{(t)}(x_j)\,\Delta
+\approx \int_{(a_j,a_{j+1})} f^{(t)}(u)\,du .
+\]
+\item Compute the kernel smoothing of the restricted density by discrete convolution on the evaluation grid,
+\[
+\tilde g^{(t)}_j(x_j)
+= \sum_{r=1}^k K_h(x_j-x_r)\,g^{(t)}_j(x_r)\,\Delta
+\approx \int K_h(x_j-u)\,g^{(t)}_j(u)\,du .
+\]
+implemented with FFT-based convolution.
+\item Update
+\[
+f^{(t+1)}(x_j)=\sum_{j=1}^k \frac{n_j\,\tilde g^{(t)}_j(x_j)}{n\,c^{(t)}_j},
+\]
+and renormalize so that $\sum_j f^{(t+1)}(x_j)\Delta =1$.
+\item Stop when $\sum_j |f^{(t+1)}(x_j)-f^{(t)}(x_j)|\,\Delta$ is below a tolerance (or when the maximum number of iterations is reached).
+\end{enumerate}
+The output is the estimated density values $\{f(x_j)\}$ on the evaluated grid centers $\{x_j\}$ together with the selected bandwidth $h$.
+
+
+\subsection{Binned NP: Nonparametric Estimation for Interval-Grouped Data}
+
+\cite{BarreiroUresEtAl2019} describe the \texttt{binnednp} \citep{binnednp2019} implementation of the grouped-data kernel density estimator of \cite{reyes2016nonparametric}, together with plug-in and bootstrap bandwidth selectors. In our comparison, we use the same procedure to obtain the bootstrap bandwidth and then evaluate the corresponding grouped-data kernel density estimate on the grid. 
+
+\subsubsection*{Bandwidth selection}
+\begin{enumerate}
+
+\item The pilot bandwidth $g$ is selected before computing the bootstrap bandwidth. Let $x_j=\frac{a_{j-1}+a_j}{2}$ denote bin midpoints for $j = 1,\ldots,k$. For any bandwidth $g>0$, define the grouped-data Gaussian kernel estimator
+\[
+\hat f_g(x)=\sum_{j=1}^k \frac{n_j}{n\,g}\,\varphi\!\left(\frac{x-x_j}{g}\right),
+\]
+where $\varphi$ is the standard normal density. Define the histogram density
+\[
+f_{\mathrm{hist}}(x)=\sum_{j=1}^k \frac{n_j}{n(a_j-a_{j-1})}\;1\{x\in (a_{j-1},a_j]\}.
+\]
+The pilot $g$ is then chosen by minimizing a penalized integrated squared error between $\hat f_g$ and the histogram,
+\[
+g=\arg\min_{g>0}\left\{\int \big(\hat f_g(x)-f_{\mathrm{hist}}(x)\big)^2\,dx \;+\; \lambda\,\mathcal{P}(\hat f_g)\right\},
+\]
+where $\mathcal{P}(\hat f_g)$ is a curvature penalty, and $\lambda$ controls the amount of penalization. In \texttt{binnednp}, $\lambda$ is calibrated using a normal-mixture approximation fitted to the grouped sample by EM with BIC-based selection.
+
+\item A bootstrap sample is generated from $\hat f_g$ by drawing $X_1^{*},\ldots,X_n^{*}$ i.i.d.\ with density $\hat f_g$. From the resulting bootstrap sample, construct the ungrouped kernel density estimator with bandwidth $h$,
+\[
+\hat f_h^{*}(x)=\frac{1}{n h}\sum_{i=1}^n K\!\left(\frac{x-X_i^{*}}{h}\right),
+\]
+where $K$ is the Gaussian kernel. The bootstrap criterion is
+\[
+\mathrm{MISE}^{*}(h)=\mathbb{E}^{*}\!\left[\int\{\hat f_h^{*}(x)-\hat f_g(x)\}^2\,dx\right],
+\qquad 
+h_{\mathrm{boot}}=\arg\min_{h>0}\mathrm{MISE}^{*}(h).
+\]
+$\mathrm{MISE}^{*}(h)$ admits a closed-form expression, so $h_{\mathrm{boot}}$ is obtained by evaluating this expression over a grid of candidate $h$ values and choosing the minimizer. 
+
+
+\end{enumerate}
+
+
+\subsubsection*{Algorithm}
+\begin{enumerate}
+\item Using the Gaussian kernel, evaluate the grouped-data kernel density estimator at the evaluation points $x \in [a_1,a_{k+1}]$ by
+\[
+\hat f_h(x)
+= \sum_{j=1}^k \frac{n_j}{n\,h_{\mathrm{boot}}}\,\varphi\!\left(\frac{x-x_j}{h}\right),
+\]
+where $\varphi(\cdot)$ denotes the standard normal density and $h=h_{\mathrm{boot}}$.
+\item Return $\{\hat f_{h_{\mathrm{boot}}}(x)\}$ on the evaluation grid.
+\end{enumerate}
+
+\subsection{KernSmooth: Binned kernel density estimation}
+
+The \texttt{KernSmooth} \citep{KernSmoothPackage} package implements binned kernel density estimation routines and plug-in bandwidth selectors used in kernel smoothing (see, e.g., \cite{WandJones1995}). In our comparison, we use the \texttt{KernSmooth} workflow for binned KDE: we first represent the grouped sample by expanding bin midpoints according to the observed counts, select the bandwidth using the direct plug-in selector \texttt{dpik}, and then compute the binned kernel density estimate using \texttt{bkde} with a Gaussian kernel on the evaluation grid.
+
+\subsubsection*{Bandwidth selection}
+\begin{enumerate}
+\item Construct the midpoint-expanded sample. Let bins be $(a_j,a_{j+1}]$ with counts $n_j$ and centers
+\[
+x_j=\frac{a_j+a_{j+1}}{2},\qquad j=1,\ldots,k.
+\]
+Form the pseudo-sample $y=(y_1,\ldots,y_n)$ by repeating each center $x_j$ exactly $n_j$ times.
+\item Compute the plug-in bandwidth $h=\texttt{dpik}(y)$. For the Gaussian-kernel KDE
+\[
+\hat f_h(x)=\frac{1}{nh}\sum_{i=1}^n \varphi\!\left(\frac{x-y_i}{h}\right),
+\]
+the AMISE-optimal bandwidth satisfies
+\[
+h_{\mathrm{AMISE}}
+=\left(\frac{R(K)}{\mu_2(K)^2\,R(f'')\,n}\right)^{1/5},
+\qquad 
+R(f'')=\int \{f''(x)\}^2\,dx.
+\]
+The \texttt{dpik} selector replaces $R(f'')$ by a pilot-based estimate $\widehat{R(f'')}$ and computes
+\[
+h^*
+=\left(\frac{R(K)}{\mu_2(K)^2\,\widehat{R(f'')}\,n}\right)^{1/5}.
+\]
+This differs from the Sheather--Jones (1991) approach, which uses an estimate $\widehat{R(f'')}(h)$ that depends on $h$ through the pilot bandwidths, and therefore determines $h$ by solving the fixed-point equation.
+
+\end{enumerate}
+
+\subsubsection*{Algorithm}
+\begin{enumerate}
+\item The binned kernel density estimate computed by \texttt{bkde} is the Gaussian-kernel KDE
+\[
+\hat f_h(x)
+=\frac{1}{nh^*}\sum_{i=1}^n K\!\left(\frac{x-y_i}{h^*}\right),
+\qquad \ell=1,\ldots,L,
+\]
+with $K=\varphi$ and bandwidth $h^*$, evaluated by first binning the sample $\{y_i\}$ onto the uniform grid and then applying discrete convolution with the kernel weights implemented with FFT. The output consists of the evaluated grid points $\{x\}$ and the corresponding values $\{\hat f_h(x)\}$.
+
+
+\begin{sidewaystable}[p]
+\centering
+\caption{
+Simulation study configurations. For grid width variations, $\delta$ values were standardized as $\delta / \sigma = (0.5, 1.0, 1.5, 2.0, 2.5)$, ensuring consistency across distributions. The corresponding grid widths $\delta$ and number of intervals $k$ were determined based on the standard deviation for each distribution. In sample size variation, $n$ was varied while keeping the standardized grid width ($\delta / \sigma = 0.5$) and corresponding number of intervals $k$ fixed for each distribution.
+}
+\renewcommand{\arraystretch}{1.5} % Increase row spacing for readability
+\setlength{\tabcolsep}{6pt} % Adjust column spacing
+\begin{tabular}{l l | ccccc | ccccc c}
+    \toprule
+    \multicolumn{2}{c|}{} & \multicolumn{5}{c|}{Grid Width Variation ($n = 1000$)} & \multicolumn{6}{c}{Sample Size Variation} \\ 
+    \cmidrule(lr){1-7} \cmidrule(lr){8-13}
+    \textit{Distribution} & \textit{Parameters} & $\delta$ (k) & $\delta$ (k) & $\delta$ (k) & $\delta$ (k) & $\delta$ (k) & $n$ & $n$ & $n$ & $n$ & $n$ & $\delta$ (k) \\ 
+    \midrule
+    Normal        & $\mu = 0, \sigma = 1$   & 2.50 (2) & 2.00 (3) & 1.50 (4) & 1.00 (6) & 0.50 (12) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 0.50 (12) \\ 
+    Gamma         & $\alpha = 2, \beta = 5$  & 0.71 (11) & 0.57 (14) & 0.42 (18) & 0.28 (28) & 0.14 (56) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 0.14 (56) \\ 
+    Beta          & $\alpha = 2, \beta = 5$  & 0.40 (4) & 0.32 (5) & 0.24 (7) & 0.16 (11) & 0.08 (22) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 0.08 (22) \\ 
+    Logistic      & $\mu = 0, s = 1$         & 4.54 (7) & 3.63 (8) & 2.72 (11) & 1.81 (17) & 0.91 (35) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 0.91 (35) \\ 
+    Laplace       & $\mu = 0, \sigma = 1$   & 3.54 (7) & 2.83 (9) & 2.12 (12) & 1.41 (18) & 0.71 (36) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$& 0.71 (36) \\ 
+    Chi-Square    & $v = 3$                  & 6.12 (4) & 4.90 (5) & 3.67 (7) & 2.45 (11) & 1.23 (22) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$& 1.23 (22) \\ 
+    Weibull       & $\lambda = 2, k = 1$     & 1.16 (7) & 0.93 (9) & 0.70 (12) & 0.46 (19) & 0.23 (38) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$& 0.23 (38) \\ 
+    Student's $t$ & $v = 3$                  & 4.33 (13) & 3.46 (16) & 2.60 (22) & 1.73 (33) & 0.87 (66) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$& 0.87 (66) \\ 
+    Log-Normal    & $\mu = 1, \sigma = 1$    & 14.69 (8) & 11.75 (10) & 8.81 (13) & 5.88 (20) & 2.94 (40) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 2.94 (40) \\ 
+    Pareto        & $\alpha = 4, \mu = 2$    & 2.36 (10) & 1.89 (12) & 1.41 (16) & 0.94 (25) & 0.47 (50) & $10^2$ & $10^3$ & $10^4$ & $10^5$ & $10^6$ & 0.47 (50) \\ 
+    \bottomrule
+\end{tabular}
+\label{table2}
+\parbox{1\linewidth}{
+  \vspace{1ex}
+  \footnotesize{
+    \textit{Note:} $\delta$ = Gridt Width.  $k$ = Number of intervals. 
+  }
+}
+\end{sidewaystable}
+
+
+% References 
+
+% - Wand, M. P., & Jones, M. C. (1995). Kernel Smoothing. Chapman & Hall.
+% - Ripley, B. D. (maintainer). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995). R package.
+
+% - Barreiro-Ures, D., Francisco-Fernández, M., Cao, R., Fraguela, B. B., Doallo, R., González-Andújar, J. L., & Reyes, M. (2019). Analysis of interval-grouped data in weed science: The binnednp Rcpp package. (Preprint / and published version in Ecology & Evolution).
+
+% - Blower, G., & Kelsall, J. E. (2002). Nonlinear kernel density estimation for binned data: convergence in entropy. Bernoulli, 8(4), 423–449.
+
+% - R stats documentation: Bandwidth Selectors for Kernel Density Estimation (e.g., bw.nrd, bw.SJ, etc.).
+
+
+% Sheather, S. J., & Jones, M. C. (1991). A Reliable Data-Based Bandwidth Selection Method for Kernel Density Estimation. Journal of the Royal Statistical Society. Series B (Methodological), 53(3), 683–690. http://www.jstor.org/stable/2345597
+
+\end{enumerate}
+
+
+
+
+
+
+% \section{Adjusted log-concave density estimation algorithms} \label{appendixB}
+% \begin{algorithm}
+% \caption{Adjusted Log Concave Density Estimation - Uniform Grid Width}
+% \textbf{Input:} $n_i$ (Frequencies), $a_i$ (Lower Boundaries), $b_i$ (Upper Boundaries)
+% \begin{algorithmic}[1]
+%     \State $X_{ij} \gets rep(a_i, n_i)$ \Comment{(\ref{CreatingXij})}
+%     \State $\Delta \gets unique(b_i - a_i)$ \Comment{Grid Width}
+%     \State $X^*_{ij} \gets round(X_{ij} / \Delta)$ \Comment{(\ref{rounding})}
+%     \State $DLC \gets \text{logConDiscrMLE}(X)$ \Comment{Discrete Log-Concave Function}
+%     \State $X^*_{(i)} \gets X_{(i)} \cdot \Delta$ \Comment{(\ref{conversion1})}
+%     \State $LCM \gets \text{gcmlcm}(X = X^*_{(i)}, Y = \hat{\varphi}_{(i)}, \text{ type} = \text{"lcm"})$ \Comment{Least Concave Majorant Function}
+%     \State $n_{knots} \gets \text{length}(x_{knots})$
+%     \State $intercept \gets \text{rep}(0, n_{knots})$
+%     \State $integral \gets 0$
+
+%     \For{$i \gets 1 \text{ to } n_{knots}$} \label{for1}
+%         \State $intercept[i] \gets \hat{\varphi}_{knots}[i] - x_{knots}[i] \cdot slope[i]$
+%         \State $f(x) \gets \exp(slope[i] \cdot x + intercept[i])$
+%         \State $integral \gets \int_{x_{knots}{[i]}}^{x_{knots}[i +1]} f(x) + integral$
+%     \EndFor \label{for11}
+%     \State $\alpha \gets 1 / integral$ \Comment{(\ref{alpha})}
+%     \State $f^{*}(x) \gets f(x) \cdot \alpha$ \Comment{(\ref{equation1})}
+%     \State $E^{*}(X) \gets 0$
+%     \For{$i \gets 1 \text{ to } n_{knots}$} \label{for2}
+%         \State $f^{*}(x) \cdot x \gets \exp(slope[i] \cdot x + intercept[i]) \cdot   \alpha \cdot x$
+%         \State $E^{*}(X) \gets \int_{x_{knots}{[i]}}^{x_{knots}[i +1]} f^*(x)\cdot x + E^{*}(X)$ \Comment{(\ref{expectation})}
+%     \EndFor \label{for22}
+
+%     \State $\Delta_x \gets  E^{*}(X) - \hat{\mu}_{EM}$ \Comment{(\ref{deltax})}
+%     \State $x_{knots}^{**} \gets x_{knots}  - \Delta_x$ \Comment{(\ref{xchangeswithdeltax})}
+
+%     \State $integral \gets 0$
+%     \For{$i \gets 1 \text{ to } n_{knots}$} \label{for3}
+%         \State $f^*(x) \gets \exp(slope[i] \cdot x + intercept[i]) \cdot \alpha$
+%         \State $integral \gets \int_{x_{knots}^{**}{[i]}}^{x_{knots}^{**}[i +1]} f^*(x) + integral$
+%     \EndFor \label{for33}
+%     \State $\beta \gets 1 / integral$ \Comment{(\ref{beta})}
+%     \State $f^{**}(x) \gets f^*(x) \cdot \beta$ \Comment{Recovery Function (\ref{f**})} \\
+% \textbf{Return:} $f^{**}(x)$
+% \end{algorithmic}
+% \label{alg1}
+% \end{algorithm}
+
+
+% \begin{algorithm}
+% \caption{Adjusted Log Concave Density Estimation - Non-Uniform Grid Width}
+% \textbf{Input:} $n_i$ (Frequencies), $a_i$ (Lower Boundaries), $b_i$ (Upper Boundaries)
+% \begin{algorithmic}[1]
+%     \State $X \gets rep(a_i, n_i)$ 
+%     \State $GW \gets b_i - a_i$ \Comment{Each Grid Width being stored}
+%     \State $\Delta \gets c( GW[diff(GW) \neq 0],GW[length(GW)])$ \Comment{Non-Uniform Grid Width}
+%     \State $a_{index} \gets c(1, which(GW \neq lag(GW))$
+%     \State $b_{index} \gets c(which(GW \neq lag(GW)) - 1, length(GW))$
+%     \State $X_{lower}, X_{upper}, \Delta_{ratios} \gets vector()$
+%     \State $X_{uv\!j}, DLC, \hat{\varphi}_{u(v)} \gets list()$
+%     \For{$u \gets 1 \text{ to } s$}
+%             \State $X_{lower}[u] = a_i[a_{index}[u]]$
+%             \State $X_{upper}[u] = b_i[b_{index}[u]]$
+%             \State $X_{uv\!j}[[u]] = X[X_{upper}[u] > X$ \& $X >= X_{lower}[u]]$
+%             \State $X_{uv\!j}^*[[u]] = X_{uv\!j}[[u]] / \Delta[u]$ \Comment{(\ref{rounding2})}
+%             \State $DLC[[u]] = logConDiscrMLE(X_{uv\!j}^*[[u]])$ \Comment{Discrete Log-Concave Function}
+%             \State $X_{u(v)}^*[[u]] = X_{u(v)}[[u]] \cdot \Delta[u]$ \Comment{(\ref{conversion2})}
+%             \State $\Delta_{ratios}[u] = n_{uv} / n$
+%             \State $\exp(\hat{\varphi}_{u(v)})^*[[u]] =  \exp(\hat{\varphi}_{u(v)})[[u]] \cdot \Delta_{ratios}[u] / \Delta[u]$ \Comment{(\ref{nonuniformvarphi})}
+%     \EndFor
+%     \State  $X_{(i)} \gets unlist(X_{u(v)}^*)$ 
+%     \State  $\hat{\varphi}_{(i)} \gets log(unlist(\exp(\hat{\varphi}_{u(v)})^*)$
+%     \State $LCM \gets \text{gcmlcm}(x = X_{(i)}, y = \hat{\varphi}_{(i)}, \text{ type} = \text{"lcm"})$ \Comment{Least Concave Majorant Function}
+%     \State $n_{knots} \gets \text{length}(\hat{\varphi}_{knots})$
+%     \State $intercept \gets \text{rep}(0, n_{knots})$
+%     \State $integral \gets 0$
+%     \State For loop in Algorithm \ref{alg1} lines \ref{for1} to \ref{for11}
+%     \State $\alpha \gets 1 / integral$ \Comment{(\ref{alpha})}
+%     \State $f^{*}(x) \gets f(x) \cdot \alpha$ \Comment{(\ref{equation1})}
+%     \State $E^{*}(X) \gets 0$
+%     \State For loop in Algorithm \ref{alg1} lines \ref{for2} to \ref{for22}
+%     \State $\Delta_x \gets  E^{*}(X) - \mu_{EM}$ \Comment{(\ref{deltax})}
+%     \State $x_{knots}^{**} \gets x_{knots}  - \Delta_x$ \Comment{(\ref{xchangeswithdeltax})}
+%     \State $integral \gets 0$
+%     \State For loop in Algorithm \ref{alg1} lines \ref{for3} to \ref{for33}
+%     \State $\beta \gets 1 / integral$ \Comment{(\ref{beta})}
+%     \State $f^{**}(x) \gets f^*(x) \cdot \beta$ \Comment{Recovery Function (\ref{f**})} \\
+% \textbf{Return:} $f^{**}(x)$
+% \end{algorithmic}
+% \label{alg2}
+% \end{algorithm}
+
+
+\clearpage
+
+\bibliographystyle{ims}
+\bibliography{references2}
+%\bibliographystyle{abbrv}
+
+
+\end{document}
