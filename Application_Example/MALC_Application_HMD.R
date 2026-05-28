@@ -36,20 +36,31 @@ for (country in Countries){
   n_male = HMD_CAN_2010_M$Male
   n_female = HMD_CAN_2010_F$Female
   
-  lcd_results_male = get_fhatn_with_n(n_male,grid)
+  lcd_results_male = get_fhatn_with_n(n_i = n_male,grid = grid)
   
-  lcd_results_male_mu = round(EMemp_with_n(n_male,grid))
+  lcd_results_male_mu = round(EMemp_with_n(n_male,grid)$mu_hat)
   
   grid2 <- seq(min(grid),max(grid), length.out=1001)
   
-  estimated_grid_density_male = evaluateLogConDens(grid2,lcd_results_male$fhatn,which = 4)[,5]
+  density_male = evaluateLogConDens(grid2,lcd_results_male$fhatn,which = c(4,5))
+  
+  cdf_male = density_male[,6]
+  
+  estimated_grid_density_male = density_male[,5]
   
   lcd_results_female = get_fhatn_with_n(n_female,grid)
   
-  lcd_results_female_mu = round(EMemp_with_n(n_female,grid))
+  lcd_results_female_mu = round(EMemp_with_n(n_female,grid)$mu_hat)
   
-  estimated_grid_density_female = evaluateLogConDens(grid2,lcd_results_female$fhatn,which = 4)[,5]
+  density_female = evaluateLogConDens(grid2,lcd_results_female$fhatn,which = c(4,5))
   
+  cdf_female = density_female[,6]
+  
+  estimated_grid_density_female = density_female[,5]
+  
+  hazard_func_male = estimated_grid_density_male / (1 - cdf_male)
+  hazard_func_female = estimated_grid_density_female / (1 - cdf_female)
+    
   grDevices::pdf(
     glue("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/Mortaility_{country}.pdf"),
     width = 12, height = 10
@@ -59,7 +70,7 @@ for (country in Countries){
       font.axis=1,cex.main=3)
   
   plot(grid2, estimated_grid_density_female, type = "l",
-       xlab = "Age", ylab = "PDF",
+       xlab = "", ylab = "",
        main = "",col="purple",lwd = 5)
   
   lines(grid2, estimated_grid_density_male,col="brown3",lwd = 5)
@@ -77,6 +88,25 @@ for (country in Countries){
          inset = c(0, 0),x.intersp = 0.2, y.intersp = 1,seg.len = 0.75) # -0.3
   
   dev.off()
+  
+  
+  grDevices::pdf(
+    glue("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/Hazard_{country}.pdf"),
+    width = 12, height = 10
+  )
+  
+  par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
+      font.axis=1,cex.main=3)
+  
+  plot(grid2, hazard_func_male, type = "l",
+       xlab = "", ylab = "",
+       main = "",col="brown3",lwd = 5)
+  
+  lines(grid2, hazard_func_female,col="purple",lwd = 5)
+  
+  dev.off()
+ 
+  print(country)
   
 }
 
@@ -199,7 +229,7 @@ par(bg = 'white', mar = c(4, 5, 4, 1), xpd = TRUE, cex = 6, bty = "l", font.lab 
     mfrow = c(1, 1), cex.lab = 3, cex.axis = 3, font.axis = 1, cex.main = 3)
 
 plot(grid2, estimated_grid_density_NOR, type = "l",
-     xlab = "Age", ylab = "PDF",
+     xlab = "Age", ylab = "",
      main = "", col = color["NOR"], lwd = 5)
 d <- d + 1
 
@@ -299,12 +329,12 @@ lcd_results_AUS_mu <- EMemp_with_n(n_all_AUS, grid_AUS)
 
 d <- d + 1
 
-round(lcd_results_NOR_mu)
-round(lcd_results_JPN_mu)
-round(lcd_results_AUS_mu)
-round(lcd_results_CAN_mu)
-round(lcd_results_KOR_mu)
-round(lcd_results_USA_mu)
+#round(lcd_results_NOR_mu)
+#round(lcd_results_JPN_mu)
+#round(lcd_results_AUS_mu)
+#round(lcd_results_CAN_mu)
+#round(lcd_results_KOR_mu)
+#round(lcd_results_USA_mu)
 
 color_2 <- c(
   "NOR" = "#e7298a",

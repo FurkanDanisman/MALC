@@ -147,9 +147,9 @@ for (i in 1:B) {
   
   x <- rnorm(n[1], mean = mu,sd=sigma)
   
-  err_densolog = L2_Distance_calc_both(x,norm_grid,pdf_norm)
-  res_norm_pdf_n_12_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_n_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grid,pdf_norm)
+  res_norm_pdf_n_12_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_n_12_method1[i] = err_malc[2]
   
   res_norm_pdf_n_12_method2[i] = L2_from_res(x,norm_grid,pdf_norm)
   res_norm_pdf_n_12_method3[i] = L2_binnednp(x,norm_grid,pdf_norm)
@@ -159,9 +159,9 @@ for (i in 1:B) {
   
   x <- rnorm(n[2], mean = mu,sd=sigma)
   
-  err_densolog = L2_Distance_calc_both(x,norm_grid,pdf_norm)
-  res_norm_pdf_n_22_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_n_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grid,pdf_norm)
+  res_norm_pdf_n_22_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_n_22_method1[i] = err_malc[2]
   
   res_norm_pdf_n_22_method2[i] = L2_from_res(x,norm_grid,pdf_norm)
   res_norm_pdf_n_22_method3[i] = L2_binnednp(x,norm_grid,pdf_norm)
@@ -171,9 +171,9 @@ for (i in 1:B) {
   
   x <- rnorm(n[3], mean = mu,sd=sigma)
   
-  err_densolog = L2_Distance_calc_both(x,norm_grid,pdf_norm)
-  res_norm_pdf_n_32_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_n_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grid,pdf_norm)
+  res_norm_pdf_n_32_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_n_32_method1[i] = err_malc[2]
   
   res_norm_pdf_n_32_method2[i] = L2_from_res(x,norm_grid,pdf_norm)
   res_norm_pdf_n_32_method3[i] = L2_binnednp(x,norm_grid,pdf_norm)
@@ -183,9 +183,9 @@ for (i in 1:B) {
   
   x <- rnorm(n[4], mean = mu,sd=sigma)
   
-  err_densolog = L2_Distance_calc_both(x,norm_grid,pdf_norm)
-  res_norm_pdf_n_42_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_n_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grid,pdf_norm)
+  res_norm_pdf_n_42_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_n_42_method1[i] = err_malc[2]
   
   res_norm_pdf_n_42_method2[i] = L2_from_res(x,norm_grid,pdf_norm)
   res_norm_pdf_n_42_method3[i] = L2_binnednp(x,norm_grid,pdf_norm)
@@ -195,9 +195,9 @@ for (i in 1:B) {
   
   x <- rnorm(n[5], mean = mu,sd=sigma)
   
-  err_densolog = L2_Distance_calc_both(x,norm_grid,pdf_norm)
-  res_norm_pdf_n_52_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_n_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grid,pdf_norm)
+  res_norm_pdf_n_52_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_n_52_method1[i] = err_malc[2]
   
   res_norm_pdf_n_52_method2[i] = L2_from_res(x,norm_grid,pdf_norm)
   res_norm_pdf_n_52_method3[i] = L2_binnednp(x,norm_grid,pdf_norm)
@@ -334,9 +334,9 @@ for (i in 1:B) {
   
   x   <- rbeta(n[1],alpha,beta)
   
-  err_densolog = L2_Distance_calc_both(x,beta_grid,pdf_beta)
-  res_beta_pdf_n_12_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_n_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grid,pdf_beta)
+  res_beta_pdf_n_12_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_n_12_method1[i] = err_malc[2]
   
   res_beta_pdf_n_12_method2[i] = L2_from_res(x,beta_grid,pdf_beta)
   res_beta_pdf_n_12_method3[i] = L2_binnednp(x,beta_grid,pdf_beta)
@@ -346,9 +346,9 @@ for (i in 1:B) {
   
   x   <- rbeta(n[2],alpha,beta)
   
-  err_densolog = L2_Distance_calc_both(x,beta_grid,pdf_beta)
-  res_beta_pdf_n_22_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_n_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grid,pdf_beta)
+  res_beta_pdf_n_22_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_n_22_method1[i] = err_malc[2]
   
   res_beta_pdf_n_22_method2[i] = L2_from_res(x,beta_grid,pdf_beta)
   res_beta_pdf_n_22_method3[i] = L2_binnednp(x,beta_grid,pdf_beta)
@@ -358,9 +358,9 @@ for (i in 1:B) {
   
   x   <- rbeta(n[3],alpha,beta)
   
-  err_densolog = L2_Distance_calc_both(x,beta_grid,pdf_beta)
-  res_beta_pdf_n_32_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_n_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grid,pdf_beta)
+  res_beta_pdf_n_32_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_n_32_method1[i] = err_malc[2]
   
   res_beta_pdf_n_32_method2[i] = L2_from_res(x,beta_grid,pdf_beta)
   res_beta_pdf_n_32_method3[i] = L2_binnednp(x,beta_grid,pdf_beta)
@@ -370,9 +370,9 @@ for (i in 1:B) {
   
   x   <- rbeta(n[4],alpha,beta)
   
-  err_densolog = L2_Distance_calc_both(x,beta_grid,pdf_beta)
-  res_beta_pdf_n_42_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_n_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grid,pdf_beta)
+  res_beta_pdf_n_42_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_n_42_method1[i] = err_malc[2]
   
   res_beta_pdf_n_42_method2[i] = L2_from_res(x,beta_grid,pdf_beta)
   res_beta_pdf_n_42_method3[i] = L2_binnednp(x,beta_grid,pdf_beta)
@@ -382,9 +382,9 @@ for (i in 1:B) {
   
   x   <- rbeta(n[5],alpha,beta)
   
-  err_densolog = L2_Distance_calc_both(x,beta_grid,pdf_beta)
-  res_beta_pdf_n_52_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_n_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grid,pdf_beta)
+  res_beta_pdf_n_52_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_n_52_method1[i] = err_malc[2]
   
   res_beta_pdf_n_52_method2[i] = L2_from_res(x,beta_grid,pdf_beta)
   res_beta_pdf_n_52_method3[i] = L2_binnednp(x,beta_grid,pdf_beta)
@@ -482,9 +482,9 @@ for (i in 1:B) {
   x <- (rgamma(n[1],alpha,beta))
   
   # res_gamma_pdf_n_11_method1[i] = L1_Distance_calc(x,gamma_grid,pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
-  res_gamma_pdf_n_12_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_n_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
+  res_gamma_pdf_n_12_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_n_12_method1[i] = err_malc[2]
   res_gamma_pdf_n_12_method2[i] = L2_from_res(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_12_method3[i] = L2_binnednp(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_12_method4[i] = L2_from_kernsmooth(x,gamma_grid,pdf_gamma)
@@ -494,9 +494,9 @@ for (i in 1:B) {
   x   <- (rgamma(n[2],alpha,beta))
   
   # res_gamma_pdf_n_21_method1[i] = L1_Distance_calc(x,gamma_grid,pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
-  res_gamma_pdf_n_22_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_n_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
+  res_gamma_pdf_n_22_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_n_22_method1[i] = err_malc[2]
   res_gamma_pdf_n_22_method2[i] = L2_from_res(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_22_method3[i] = L2_binnednp(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_22_method4[i] = L2_from_kernsmooth(x,gamma_grid,pdf_gamma)
@@ -506,9 +506,9 @@ for (i in 1:B) {
   x   <- (rgamma(n[3],alpha,beta))
   
   # res_gamma_pdf_n_31_method1[i] = L1_Distance_calc(x,gamma_grid,pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
-  res_gamma_pdf_n_32_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_n_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
+  res_gamma_pdf_n_32_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_n_32_method1[i] = err_malc[2]
   res_gamma_pdf_n_32_method2[i] = L2_from_res(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_32_method3[i] = L2_binnednp(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_32_method4[i] = L2_from_kernsmooth(x,gamma_grid,pdf_gamma)
@@ -518,9 +518,9 @@ for (i in 1:B) {
   x   <- (rgamma(n[4],alpha,beta))
   
   # res_gamma_pdf_n_41_method1[i] = L1_Distance_calc(x,gamma_grid,pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
-  res_gamma_pdf_n_42_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_n_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
+  res_gamma_pdf_n_42_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_n_42_method1[i] = err_malc[2]
   res_gamma_pdf_n_42_method2[i] = L2_from_res(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_42_method3[i] = L2_binnednp(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_42_method4[i] = L2_from_kernsmooth(x,gamma_grid,pdf_gamma)
@@ -530,9 +530,9 @@ for (i in 1:B) {
   x   <- (rgamma(n[5],alpha,beta))
   
   # res_gamma_pdf_n_51_method1[i] = L1_Distance_calc(x,gamma_grid,pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
-  res_gamma_pdf_n_52_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_n_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grid,pdf_gamma)
+  res_gamma_pdf_n_52_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_n_52_method1[i] = err_malc[2]
   res_gamma_pdf_n_52_method2[i] = L2_from_res(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_52_method3[i] = L2_binnednp(x,gamma_grid,pdf_gamma)
   res_gamma_pdf_n_52_method4[i] = L2_from_kernsmooth(x,gamma_grid,pdf_gamma)
@@ -612,14 +612,14 @@ print_latex_table <- function(tab, caption = "", label = "", digits = 4) {
 n_names <- c("$10^1$", "$10^2$", "$10^3$", "$10^4$", "$10^5$")
 
 normal_methods <- list(
-  "DensOLog" = list(
+  "MALC" = list(
     res_norm_pdf_n_12_method1,
     res_norm_pdf_n_22_method1,
     res_norm_pdf_n_32_method1,
     res_norm_pdf_n_42_method1,
     res_norm_pdf_n_52_method1
   ),
-  "DensOLog Smoothed" = list(
+  "MALC Smoothed" = list(
     smoothed_res_norm_pdf_n_12_method1,
     smoothed_res_norm_pdf_n_22_method1,
     smoothed_res_norm_pdf_n_32_method1,
@@ -650,14 +650,14 @@ normal_methods <- list(
 )
 
 gamma_methods <- list(
-  "DensOLog" = list(
+  "MALC" = list(
     res_gamma_pdf_n_12_method1,
     res_gamma_pdf_n_22_method1,
     res_gamma_pdf_n_32_method1,
     res_gamma_pdf_n_42_method1,
     res_gamma_pdf_n_52_method1
   ),
-  "DensOLog Smoothed" = list(
+  "MALC Smoothed" = list(
     smoothed_res_gamma_pdf_n_12_method1,
     smoothed_res_gamma_pdf_n_22_method1,
     smoothed_res_gamma_pdf_n_32_method1,
@@ -783,9 +783,9 @@ for (i in 1:B) {
   x = (rlogis(n[1]))
   
   # res_logis_pdf_n_11_method1[i] = L1_Distance_calc(x,logistic_grid,pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
-  res_logis_pdf_n_12_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_n_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
+  res_logis_pdf_n_12_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_n_12_method1[i] = err_malc[2]
   res_logis_pdf_n_12_method2[i] = L2_from_res(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_12_method3[i] = L2_binnednp(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_12_method4[i] = L2_from_kernsmooth(x,logistic_grid,pdf_logistic)
@@ -795,9 +795,9 @@ for (i in 1:B) {
   x = (rlogis(n[2]))
   
   # res_logis_pdf_n_21_method1[i] = L1_Distance_calc(x,logistic_grid,pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
-  res_logis_pdf_n_22_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_n_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
+  res_logis_pdf_n_22_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_n_22_method1[i] = err_malc[2]
   res_logis_pdf_n_22_method2[i] = L2_from_res(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_22_method3[i] = L2_binnednp(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_22_method4[i] = L2_from_kernsmooth(x,logistic_grid,pdf_logistic)
@@ -807,9 +807,9 @@ for (i in 1:B) {
   x = sort(rlogis(n[3]))
   
   # res_logis_pdf_n_31_method1[i] = L1_Distance_calc(x,logistic_grid,pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
-  res_logis_pdf_n_32_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_n_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
+  res_logis_pdf_n_32_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_n_32_method1[i] = err_malc[2]
   res_logis_pdf_n_32_method2[i] = L2_from_res(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_32_method3[i] = L2_binnednp(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_32_method4[i] = L2_from_kernsmooth(x,logistic_grid,pdf_logistic)
@@ -819,9 +819,9 @@ for (i in 1:B) {
   x = (rlogis(n[4]))
   
   # res_logis_pdf_n_41_method1[i] = L1_Distance_calc(x,logistic_grid,pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
-  res_logis_pdf_n_42_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_n_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
+  res_logis_pdf_n_42_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_n_42_method1[i] = err_malc[2]
   res_logis_pdf_n_42_method2[i] = L2_from_res(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_42_method3[i] = L2_binnednp(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_42_method4[i] = L2_from_kernsmooth(x,logistic_grid,pdf_logistic)
@@ -831,9 +831,9 @@ for (i in 1:B) {
   x = (rlogis(n[5]))
   
   # res_logis_pdf_n_51_method1[i] = L1_Distance_calc(x,logistic_grid,pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
-  res_logis_pdf_n_52_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_n_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grid,pdf_logistic)
+  res_logis_pdf_n_52_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_n_52_method1[i] = err_malc[2]
   res_logis_pdf_n_52_method2[i] = L2_from_res(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_52_method3[i] = L2_binnednp(x,logistic_grid,pdf_logistic)
   res_logis_pdf_n_52_method4[i] = L2_from_kernsmooth(x,logistic_grid,pdf_logistic)
@@ -960,9 +960,9 @@ for (i in 1:B) {
   t_grid1 <- make_breaks_cover(x, t_grid1)   # use the matching grid (t_grid1...t_grid5)
   
   # res_t_pdf_n_11_method1[i] = L1_Distance_calc(x,t_grid,pdf_t)
-  err_densolog = L2_Distance_calc_both(x,t_grid1,pdf_t)
-  res_t_pdf_n_12_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_n_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,t_grid1,pdf_t)
+  res_t_pdf_n_12_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_n_12_method1[i] = err_malc[2]
   res_t_pdf_n_12_method2[i] = L2_from_res(x,t_grid1,pdf_t)
   res_t_pdf_n_12_method3[i] = L2_binnednp(x,t_grid1,pdf_t)
   res_t_pdf_n_12_method4[i] = L2_from_kernsmooth(x,t_grid1,pdf_t)
@@ -973,9 +973,9 @@ for (i in 1:B) {
   t_grid2 <- make_breaks_cover(x, t_grid2)   # use the matching grid (t_grid1...t_grid5)
   
   # res_t_pdf_n_21_method1[i] = L1_Distance_calc(x,t_grid,pdf_t)
-  err_densolog = L2_Distance_calc_both(x,t_grid2,pdf_t)
-  res_t_pdf_n_22_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_n_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,t_grid2,pdf_t)
+  res_t_pdf_n_22_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_n_22_method1[i] = err_malc[2]
   res_t_pdf_n_22_method2[i] = L2_from_res(x,t_grid2,pdf_t)
   res_t_pdf_n_22_method3[i] = L2_binnednp(x,t_grid2,pdf_t)
   res_t_pdf_n_22_method4[i] = L2_from_kernsmooth(x,t_grid2,pdf_t)
@@ -986,9 +986,9 @@ for (i in 1:B) {
   t_grid3 <- make_breaks_cover(x, t_grid3)   # use the matching grid (t_grid1...t_grid5)
   
   # res_t_pdf_n_31_method1[i] = L1_Distance_calc(x,t_grid,pdf_t)
-  err_densolog = L2_Distance_calc_both(x,t_grid3,pdf_t)
-  res_t_pdf_n_32_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_n_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,t_grid3,pdf_t)
+  res_t_pdf_n_32_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_n_32_method1[i] = err_malc[2]
   res_t_pdf_n_32_method2[i] = L2_from_res(x,t_grid3,pdf_t)
   res_t_pdf_n_32_method3[i] = L2_binnednp(x,t_grid3,pdf_t)
   res_t_pdf_n_32_method4[i] = L2_from_kernsmooth(x,t_grid3,pdf_t)
@@ -999,9 +999,9 @@ for (i in 1:B) {
   t_grid4 <- make_breaks_cover(x, t_grid4)   # use the matching grid (t_grid1...t_grid5)
   
   # res_t_pdf_n_41_method1[i] = L1_Distance_calc(x,t_grid,pdf_t)
-  err_densolog = L2_Distance_calc_both(x,t_grid4,pdf_t)
-  res_t_pdf_n_42_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_n_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,t_grid4,pdf_t)
+  res_t_pdf_n_42_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_n_42_method1[i] = err_malc[2]
   res_t_pdf_n_42_method2[i] = L2_from_res(x,t_grid4,pdf_t)
   res_t_pdf_n_42_method3[i] = L2_binnednp(x,t_grid4,pdf_t)
   res_t_pdf_n_42_method4[i] = L2_from_kernsmooth(x,t_grid4,pdf_t)
@@ -1012,9 +1012,9 @@ for (i in 1:B) {
   t_grid5 <- make_breaks_cover(x, t_grid5)   # use the matching grid (t_grid1...t_grid5)
   
   # res_t_pdf_n_51_method1[i] = L1_Distance_calc(x,t_grid,pdf_t)
-  err_densolog = L2_Distance_calc_both(x,t_grid5,pdf_t)
-  res_t_pdf_n_52_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_n_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,t_grid5,pdf_t)
+  res_t_pdf_n_52_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_n_52_method1[i] = err_malc[2]
   res_t_pdf_n_52_method2[i] = L2_from_res(x,t_grid5,pdf_t)
   res_t_pdf_n_52_method3[i] = L2_binnednp(x,t_grid5,pdf_t)
   res_t_pdf_n_52_method4[i] = L2_from_kernsmooth(x,t_grid5,pdf_t)
@@ -1125,9 +1125,9 @@ for (i in 1:B) {
   # Normal Distribution - GW1
   
   # res_norm_pdf_gw_11_method1[i] = L1_Distance_calc(x,norm_grids[[1]],pdf_norm)
-  err_densolog = L2_Distance_calc_both(x,norm_grids[[1]],pdf_norm)
-  res_norm_pdf_gw_12_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_gw_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grids[[1]],pdf_norm)
+  res_norm_pdf_gw_12_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_gw_12_method1[i] = err_malc[2]
   res_norm_pdf_gw_12_method2[i] = L2_from_res(x,norm_grids[[1]],pdf_norm)
   res_norm_pdf_gw_12_method3[i] = L2_binnednp(x,norm_grids[[1]],pdf_norm)
   res_norm_pdf_gw_12_method4[i] = L2_from_kernsmooth(x,norm_grids[[1]],pdf_norm)
@@ -1135,9 +1135,9 @@ for (i in 1:B) {
   # Normal Distribution - GW2
   
   # res_norm_pdf_gw_21_method1[i] = L1_Distance_calc(x,norm_grids[[2]],pdf_norm)
-  err_densolog = L2_Distance_calc_both(x,norm_grids[[2]],pdf_norm)
-  res_norm_pdf_gw_22_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_gw_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grids[[2]],pdf_norm)
+  res_norm_pdf_gw_22_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_gw_22_method1[i] = err_malc[2]
   res_norm_pdf_gw_22_method2[i] = L2_from_res(x,norm_grids[[2]],pdf_norm)
   res_norm_pdf_gw_22_method3[i] = L2_binnednp(x,norm_grids[[2]],pdf_norm)
   res_norm_pdf_gw_22_method4[i] = L2_from_kernsmooth(x,norm_grids[[2]],pdf_norm)
@@ -1145,9 +1145,9 @@ for (i in 1:B) {
   # Normal Distribution - GW3
   
   # res_norm_pdf_gw_31_method1[i] = L1_Distance_calc(x,norm_grids[[3]],pdf_norm)
-  err_densolog = L2_Distance_calc_both(x,norm_grids[[3]],pdf_norm)
-  res_norm_pdf_gw_32_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_gw_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grids[[3]],pdf_norm)
+  res_norm_pdf_gw_32_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_gw_32_method1[i] = err_malc[2]
   res_norm_pdf_gw_32_method2[i] = L2_from_res(x,norm_grids[[3]],pdf_norm)
   res_norm_pdf_gw_32_method3[i] = L2_binnednp(x,norm_grids[[3]],pdf_norm)
   res_norm_pdf_gw_32_method4[i] = L2_from_kernsmooth(x,norm_grids[[3]],pdf_norm)
@@ -1155,9 +1155,9 @@ for (i in 1:B) {
   # Normal Distribution - GW4
   
   # res_norm_pdf_gw_41_method1[i] = L1_Distance_calc(x,norm_grids[[4]],pdf_norm)
-  err_densolog = L2_Distance_calc_both(x,norm_grids[[4]],pdf_norm)
-  res_norm_pdf_gw_42_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_gw_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grids[[4]],pdf_norm)
+  res_norm_pdf_gw_42_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_gw_42_method1[i] = err_malc[2]
   res_norm_pdf_gw_42_method2[i] = L2_from_res(x,norm_grids[[4]],pdf_norm)
   res_norm_pdf_gw_42_method3[i] = L2_binnednp(x,norm_grids[[4]],pdf_norm)
   res_norm_pdf_gw_42_method4[i] = L2_from_kernsmooth(x,norm_grids[[4]],pdf_norm)
@@ -1165,9 +1165,9 @@ for (i in 1:B) {
   # Normal Distribution - GW5
   
   # res_norm_pdf_gw_51_method1[i] = L1_Distance_calc(x,norm_grids[[5]],pdf_norm)
-  err_densolog = L2_Distance_calc_both(x,norm_grids[[5]],pdf_norm)
-  res_norm_pdf_gw_52_method1[i] = err_densolog[1]
-  smoothed_res_norm_pdf_gw_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,norm_grids[[5]],pdf_norm)
+  res_norm_pdf_gw_52_method1[i] = err_malc[1]
+  smoothed_res_norm_pdf_gw_52_method1[i] = err_malc[2]
   res_norm_pdf_gw_52_method2[i] = L2_from_res(x,norm_grids[[5]],pdf_norm)
   res_norm_pdf_gw_52_method3[i] = L2_binnednp(x,norm_grids[[5]],pdf_norm)
   res_norm_pdf_gw_52_method4[i] = L2_from_kernsmooth(x,norm_grids[[5]],pdf_norm)
@@ -1263,9 +1263,9 @@ for (i in 1:B) {
   # Beta Distribution - GW1
   
   # res_beta_pdf_gw_11_method1[i] = L1_Distance_calc(x,beta_grids[[1]],pdf_beta)
-  err_densolog = L2_Distance_calc_both(x,beta_grids[[1]],pdf_beta)
-  res_beta_pdf_gw_12_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_gw_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grids[[1]],pdf_beta)
+  res_beta_pdf_gw_12_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_gw_12_method1[i] = err_malc[2]
   res_beta_pdf_gw_12_method2[i] = L2_from_res(x,beta_grids[[1]],pdf_beta)
   res_beta_pdf_gw_12_method3[i] = L2_binnednp(x,beta_grids[[1]],pdf_beta)
   res_beta_pdf_gw_12_method4[i] = L2_from_kernsmooth(x,beta_grids[[1]],pdf_beta)
@@ -1274,9 +1274,9 @@ for (i in 1:B) {
   # Beta Distribution - GW2
   
   # res_beta_pdf_gw_21_method1[i] = L1_Distance_calc(x,beta_grids[[2]],pdf_beta)
-  err_densolog = L2_Distance_calc_both(x,beta_grids[[2]],pdf_beta)
-  res_beta_pdf_gw_22_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_gw_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grids[[2]],pdf_beta)
+  res_beta_pdf_gw_22_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_gw_22_method1[i] = err_malc[2]
   res_beta_pdf_gw_22_method2[i] = L2_from_res(x,beta_grids[[2]],pdf_beta)
   res_beta_pdf_gw_22_method3[i] = L2_binnednp(x,beta_grids[[2]],pdf_beta)
   res_beta_pdf_gw_22_method4[i] = L2_from_kernsmooth(x,beta_grids[[2]],pdf_beta)
@@ -1284,9 +1284,9 @@ for (i in 1:B) {
   # Beta Distribution - GW3
   
   # res_beta_pdf_gw_31_method1[i] = L1_Distance_calc(x,beta_grids[[3]],pdf_beta)
-  err_densolog = L2_Distance_calc_both(x,beta_grids[[3]],pdf_beta)
-  res_beta_pdf_gw_32_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_gw_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grids[[3]],pdf_beta)
+  res_beta_pdf_gw_32_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_gw_32_method1[i] = err_malc[2]
   res_beta_pdf_gw_32_method2[i] = L2_from_res(x,beta_grids[[3]],pdf_beta)
   res_beta_pdf_gw_32_method3[i] = L2_binnednp(x,beta_grids[[3]],pdf_beta)
   res_beta_pdf_gw_32_method4[i] = L2_from_kernsmooth(x,beta_grids[[3]],pdf_beta)
@@ -1294,9 +1294,9 @@ for (i in 1:B) {
   # Beta Distribution - GW4
   
   # res_beta_pdf_gw_41_method1[i] = L1_Distance_calc(x,beta_grids[[4]],pdf_beta)
-  err_densolog = L2_Distance_calc_both(x,beta_grids[[4]],pdf_beta)
-  res_beta_pdf_gw_42_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_gw_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grids[[4]],pdf_beta)
+  res_beta_pdf_gw_42_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_gw_42_method1[i] = err_malc[2]
   res_beta_pdf_gw_42_method2[i] = L2_from_res(x,beta_grids[[4]],pdf_beta)
   res_beta_pdf_gw_42_method3[i] = L2_binnednp(x,beta_grids[[4]],pdf_beta)
   res_beta_pdf_gw_42_method4[i] = L2_from_kernsmooth(x,beta_grids[[4]],pdf_beta)
@@ -1305,9 +1305,9 @@ for (i in 1:B) {
   # Beta Distribution - GW5
   
   # res_beta_pdf_gw_51_method1[i] = L1_Distance_calc(x,beta_grids[[5]],pdf_beta)
-  err_densolog = L2_Distance_calc_both(x,beta_grids[[5]],pdf_beta)
-  res_beta_pdf_gw_52_method1[i] = err_densolog[1]
-  smoothed_res_beta_pdf_gw_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,beta_grids[[5]],pdf_beta)
+  res_beta_pdf_gw_52_method1[i] = err_malc[1]
+  smoothed_res_beta_pdf_gw_52_method1[i] = err_malc[2]
   res_beta_pdf_gw_52_method2[i] = L2_from_res(x,beta_grids[[5]],pdf_beta)
   res_beta_pdf_gw_52_method3[i] = L2_binnednp(x,beta_grids[[5]],pdf_beta)
   res_beta_pdf_gw_52_method4[i] = L2_from_kernsmooth(x,beta_grids[[5]],pdf_beta)
@@ -1405,9 +1405,9 @@ for (i in 1:B) {
   # Gamma Distribution - GW1
   
   # res_gamma_pdf_gw_11_method1[i] = L1_Distance_calc(x,gamma_grids[[1]],pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grids[[1]],pdf_gamma)
-  res_gamma_pdf_gw_12_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_gw_12_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grids[[1]],pdf_gamma)
+  res_gamma_pdf_gw_12_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_gw_12_method1[i] = err_malc[2]
   res_gamma_pdf_gw_12_method2[i] = L2_from_res(x,gamma_grids[[1]],pdf_gamma)
   res_gamma_pdf_gw_12_method3[i] = L2_binnednp(x,gamma_grids[[1]],pdf_gamma)
   res_gamma_pdf_gw_12_method4[i] = L2_from_kernsmooth(x,gamma_grids[[1]],pdf_gamma)
@@ -1415,9 +1415,9 @@ for (i in 1:B) {
   # Gamma Distribution - GW2
   
   # res_gamma_pdf_gw_21_method1[i] = L1_Distance_calc(x,gamma_grids[[2]],pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grids[[2]],pdf_gamma)
-  res_gamma_pdf_gw_22_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_gw_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grids[[2]],pdf_gamma)
+  res_gamma_pdf_gw_22_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_gw_22_method1[i] = err_malc[2]
   res_gamma_pdf_gw_22_method2[i] = L2_from_res(x,gamma_grids[[2]],pdf_gamma)
   res_gamma_pdf_gw_22_method3[i] = L2_binnednp(x,gamma_grids[[2]],pdf_gamma)
   res_gamma_pdf_gw_22_method4[i] = L2_from_kernsmooth(x,gamma_grids[[2]],pdf_gamma)
@@ -1425,9 +1425,9 @@ for (i in 1:B) {
   # Gamma Distribution - GW3
   
   # res_gamma_pdf_gw_31_method1[i] = L1_Distance_calc(x,gamma_grids[[3]],pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grids[[3]],pdf_gamma)
-  res_gamma_pdf_gw_32_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_gw_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grids[[3]],pdf_gamma)
+  res_gamma_pdf_gw_32_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_gw_32_method1[i] = err_malc[2]
   res_gamma_pdf_gw_32_method2[i] = L2_from_res(x,gamma_grids[[3]],pdf_gamma)
   res_gamma_pdf_gw_32_method3[i] = L2_binnednp(x,gamma_grids[[3]],pdf_gamma)
   res_gamma_pdf_gw_32_method4[i] = L2_from_kernsmooth(x,gamma_grids[[3]],pdf_gamma)
@@ -1435,9 +1435,9 @@ for (i in 1:B) {
   # Gamma Distribution - GW4
   
   # res_gamma_pdf_gw_41_method1[i] = L1_Distance_calc(x,gamma_grids[[4]],pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grids[[4]],pdf_gamma)
-  res_gamma_pdf_gw_42_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_gw_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grids[[4]],pdf_gamma)
+  res_gamma_pdf_gw_42_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_gw_42_method1[i] = err_malc[2]
   res_gamma_pdf_gw_42_method2[i] = L2_from_res(x,gamma_grids[[4]],pdf_gamma)
   res_gamma_pdf_gw_42_method3[i] = L2_binnednp(x,gamma_grids[[4]],pdf_gamma)
   res_gamma_pdf_gw_42_method4[i] = L2_from_kernsmooth(x,gamma_grids[[4]],pdf_gamma)
@@ -1445,9 +1445,9 @@ for (i in 1:B) {
   # Gamma Distribution - GW5
   
   # res_gamma_pdf_gw_51_method1[i] = L1_Distance_calc(x,gamma_grids[[5]],pdf_gamma)
-  err_densolog = L2_Distance_calc_both(x,gamma_grids[[5]],pdf_gamma)
-  res_gamma_pdf_gw_52_method1[i] = err_densolog[1]
-  smoothed_res_gamma_pdf_gw_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,gamma_grids[[5]],pdf_gamma)
+  res_gamma_pdf_gw_52_method1[i] = err_malc[1]
+  smoothed_res_gamma_pdf_gw_52_method1[i] = err_malc[2]
   res_gamma_pdf_gw_52_method2[i] = L2_from_res(x,gamma_grids[[5]],pdf_gamma)
   res_gamma_pdf_gw_52_method3[i] = L2_binnednp(x,gamma_grids[[5]],pdf_gamma)
   res_gamma_pdf_gw_52_method4[i] = L2_from_kernsmooth(x,gamma_grids[[5]],pdf_gamma)
@@ -1558,16 +1558,16 @@ while (i<=B) {
   # Logistic Distribution - GW1
   
   # res_logis_pdf_gw_11_method1[i] = L1_Distance_calc(x,logistic_grids[[1]],pdf_logistic)
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, logistic_grids[[1]], pdf_logistic),
                          timeout = 120, onTimeout = "error"),
     silent = TRUE
   )
   
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
   
-  res_logis_pdf_gw_12_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_gw_12_method1[i] = err_densolog[2]
+  res_logis_pdf_gw_12_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_gw_12_method1[i] = err_malc[2]
   res_logis_pdf_gw_12_method2[i] = L2_from_res(x,logistic_grids[[1]],pdf_logistic)
   res_logis_pdf_gw_12_method3[i] = L2_binnednp(x,logistic_grids[[1]],pdf_logistic)
   res_logis_pdf_gw_12_method4[i] = L2_from_kernsmooth(x,logistic_grids[[1]],pdf_logistic)
@@ -1575,9 +1575,9 @@ while (i<=B) {
   # Logistic Distribution - GW2
   
   # res_logis_pdf_gw_21_method1[i] = L1_Distance_calc(x,logistic_grids[[2]],pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grids[[2]],pdf_logistic)
-  res_logis_pdf_gw_22_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_gw_22_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grids[[2]],pdf_logistic)
+  res_logis_pdf_gw_22_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_gw_22_method1[i] = err_malc[2]
   res_logis_pdf_gw_22_method2[i] = L2_from_res(x,logistic_grids[[2]],pdf_logistic)
   res_logis_pdf_gw_22_method3[i] = L2_binnednp(x,logistic_grids[[2]],pdf_logistic)
   res_logis_pdf_gw_22_method4[i] = L2_from_kernsmooth(x,logistic_grids[[2]],pdf_logistic)
@@ -1585,9 +1585,9 @@ while (i<=B) {
   # Logistic Distribution - GW3
   
   # res_logis_pdf_gw_31_method1[i] = L1_Distance_calc(x,logistic_grids[[3]],pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grids[[3]],pdf_logistic)
-  res_logis_pdf_gw_32_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_gw_32_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grids[[3]],pdf_logistic)
+  res_logis_pdf_gw_32_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_gw_32_method1[i] = err_malc[2]
   res_logis_pdf_gw_32_method2[i] = L2_from_res(x,logistic_grids[[3]],pdf_logistic)
   res_logis_pdf_gw_32_method3[i] = L2_binnednp(x,logistic_grids[[3]],pdf_logistic)
   res_logis_pdf_gw_32_method4[i] = L2_from_kernsmooth(x,logistic_grids[[3]],pdf_logistic)
@@ -1595,9 +1595,9 @@ while (i<=B) {
   # Logistic Distribution - GW4
   
   # res_logis_pdf_gw_41_method1[i] = L1_Distance_calc(x,logistic_grids[[4]],pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grids[[4]],pdf_logistic)
-  res_logis_pdf_gw_42_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_gw_42_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grids[[4]],pdf_logistic)
+  res_logis_pdf_gw_42_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_gw_42_method1[i] = err_malc[2]
   res_logis_pdf_gw_42_method2[i] = L2_from_res(x,logistic_grids[[4]],pdf_logistic)
   res_logis_pdf_gw_42_method3[i] = L2_binnednp(x,logistic_grids[[4]],pdf_logistic)
   res_logis_pdf_gw_42_method4[i] = L2_from_kernsmooth(x,logistic_grids[[4]],pdf_logistic)
@@ -1605,9 +1605,9 @@ while (i<=B) {
   # Logistic Distribution - GW5
   
   # res_logis_pdf_gw_51_method1[i] = L1_Distance_calc(x,logistic_grids[[5]],pdf_logistic)
-  err_densolog = L2_Distance_calc_both(x,logistic_grids[[5]],pdf_logistic)
-  res_logis_pdf_gw_52_method1[i] = err_densolog[1]
-  smoothed_res_logis_pdf_gw_52_method1[i] = err_densolog[2]
+  err_malc = L2_Distance_calc_both(x,logistic_grids[[5]],pdf_logistic)
+  res_logis_pdf_gw_52_method1[i] = err_malc[1]
+  smoothed_res_logis_pdf_gw_52_method1[i] = err_malc[2]
   res_logis_pdf_gw_52_method2[i] = L2_from_res(x,logistic_grids[[5]],pdf_logistic)
   res_logis_pdf_gw_52_method3[i] = L2_binnednp(x,logistic_grids[[5]],pdf_logistic)
   res_logis_pdf_gw_52_method4[i] = L2_from_kernsmooth(x,logistic_grids[[5]],pdf_logistic)
@@ -1711,31 +1711,31 @@ while (i <= B) {
   
   # t Distribution - GW1
   
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, t_grids[[1]], pdf_t),
                          timeout = 60, onTimeout = "error"),
     silent = TRUE
   )
   
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
   
-  res_t_pdf_gw_12_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_gw_12_method1[i] = err_densolog[2]
+  res_t_pdf_gw_12_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_gw_12_method1[i] = err_malc[2]
   res_t_pdf_gw_12_method2[i] = L2_from_res(x,t_grids[[1]],pdf_t)
   res_t_pdf_gw_12_method3[i] = L2_binnednp(x,t_grids[[1]],pdf_t)
   res_t_pdf_gw_12_method4[i] = L2_from_kernsmooth(x,t_grids[[1]],pdf_t)
   
   # t Distribution - GW2
   
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, t_grids[[2]], pdf_t),
                          timeout = 60, onTimeout = "error"),
     silent = TRUE
   )
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
   
-  res_t_pdf_gw_22_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_gw_22_method1[i] = err_densolog[2]
+  res_t_pdf_gw_22_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_gw_22_method1[i] = err_malc[2]
   res_t_pdf_gw_22_method2[i] = L2_from_res(x,t_grids[[2]],pdf_t)
   res_t_pdf_gw_22_method3[i] = L2_binnednp(x,t_grids[[2]],pdf_t)
   res_t_pdf_gw_22_method4[i] = L2_from_kernsmooth(x,t_grids[[2]],pdf_t)
@@ -1743,44 +1743,44 @@ while (i <= B) {
   
   # t Distribution - GW3
   
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, t_grids[[3]], pdf_t),
                          timeout = 60, onTimeout = "error"),
     silent = TRUE
   )
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
   
-  res_t_pdf_gw_32_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_gw_32_method1[i] = err_densolog[2]
+  res_t_pdf_gw_32_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_gw_32_method1[i] = err_malc[2]
   res_t_pdf_gw_32_method2[i] = L2_from_res(x,t_grids[[3]],pdf_t)
   res_t_pdf_gw_32_method3[i] = L2_binnednp(x,t_grids[[3]],pdf_t)
   res_t_pdf_gw_32_method4[i] = L2_from_kernsmooth(x,t_grids[[3]],pdf_t)
   
   # t Distribution - GW4
   
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, t_grids[[4]], pdf_t),
                          timeout = 60, onTimeout = "error"),
     silent = TRUE
   )
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
   
-  res_t_pdf_gw_42_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_gw_42_method1[i] = err_densolog[2]
+  res_t_pdf_gw_42_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_gw_42_method1[i] = err_malc[2]
   res_t_pdf_gw_42_method2[i] = L2_from_res(x,t_grids[[4]],pdf_t)
   res_t_pdf_gw_42_method3[i] = L2_binnednp(x,t_grids[[4]],pdf_t)
   res_t_pdf_gw_42_method4[i] = L2_from_kernsmooth(x,t_grids[[4]],pdf_t)
   
   # t Distribution - GW5
   
-  err_densolog <- try(
+  err_malc <- try(
     R.utils::withTimeout(L2_Distance_calc_both(x, t_grids[[5]], pdf_t),
                          timeout = 60, onTimeout = "error"),
     silent = TRUE
   )
-  if (inherits(err_densolog, "try-error")) next  # draw new x, same i
-  res_t_pdf_gw_52_method1[i] = err_densolog[1]
-  smoothed_res_t_pdf_gw_52_method1[i] = err_densolog[2]
+  if (inherits(err_malc, "try-error")) next  # draw new x, same i
+  res_t_pdf_gw_52_method1[i] = err_malc[1]
+  smoothed_res_t_pdf_gw_52_method1[i] = err_malc[2]
   res_t_pdf_gw_52_method2[i] = L2_from_res(x,t_grids[[5]],pdf_t)
   res_t_pdf_gw_52_method3[i] = L2_binnednp(x,t_grids[[5]],pdf_t)
   res_t_pdf_gw_52_method4[i] = L2_from_kernsmooth(x,t_grids[[5]],pdf_t)

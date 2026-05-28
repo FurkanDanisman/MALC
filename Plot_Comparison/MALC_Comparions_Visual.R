@@ -10,11 +10,11 @@ x <- sort(rnorm(100, 0, 1))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 eval_grid <- seq(min(grid),max(grid), length.out=1001)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -55,7 +55,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Norm_100.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Norm_100.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -68,7 +68,7 @@ plot(function(x) dnorm(x), xlim=c(-4,4),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -90,11 +90,11 @@ x <- sort(rnorm(500, 0, 1))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 eval_grid <- seq(min(grid),max(grid), length.out=1001)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -135,7 +135,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Norm_200.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Norm_200.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -147,7 +147,7 @@ plot(function(x) dnorm(x), xlim=c(-4,4),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -170,11 +170,11 @@ x <- sort(rnorm(1000, 0, 1))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 eval_grid <- seq(min(grid),max(grid), length.out=1001)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -215,7 +215,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Norm_1000.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Norm_1000.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -228,7 +228,7 @@ plot(function(x) dnorm(x), xlim=c(-4,4),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -255,10 +255,10 @@ x <- sort(rgamma(100, alpha, beta))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -299,7 +299,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Gamma_100.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Gamma_100.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -312,7 +312,7 @@ abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -337,10 +337,10 @@ x <- sort(rgamma(200, alpha, beta))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -381,7 +381,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Gamma_200.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Gamma_200.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -394,7 +394,7 @@ abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -418,10 +418,10 @@ x <- sort(rgamma(1000, alpha, beta))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -462,7 +462,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Gamma_1000.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Gamma_1000.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -474,7 +474,7 @@ plot(function(x) dgamma(x,alpha,beta), xlim=c(0,2.5),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -501,10 +501,10 @@ x <- sort(rpareto(100,location = location,shape = shape_p))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -545,7 +545,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Pareto_100.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Pareto_100.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -557,7 +557,7 @@ plot(function(x) dpareto(x,location,shape_p), xlim=c(2,7),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -581,10 +581,10 @@ x <- sort(rpareto(200,location = location,shape = shape_p))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -625,7 +625,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Pareto_200.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Pareto_200.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -637,7 +637,7 @@ plot(function(x) dpareto(x,location,shape_p), xlim=c(2,7),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -660,10 +660,10 @@ x <- sort(rpareto(1000,location = location,shape = shape_p))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -704,7 +704,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_Pareto_1000.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_Pareto_1000.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -716,7 +716,7 @@ plot(function(x) dpareto(x,location,shape_p), xlim=c(2,7),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -742,10 +742,10 @@ x <- sort(rchisq(100, df))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -786,7 +786,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_ChiSqr_100.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_ChiSqr_100.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -798,7 +798,7 @@ plot(function(x) dchisq(x,df), xlim=c(0,10),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -822,10 +822,10 @@ x <- sort(rchisq(200, df))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -866,7 +866,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_ChiSqr_200.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_ChiSqr_200.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -878,7 +878,7 @@ plot(function(x) dchisq(x,df), xlim=c(0,10),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
@@ -902,10 +902,10 @@ x <- sort(rchisq(1000, df))
 
 # Estimation 
 
-# DensOLog 
+# MALC 
 fhat2 = get_fhatn(x,grid,log_conc = FALSE)
 fhat2plot <- evaluateLogConDens(eval_grid, fhat2$fhatn, which=4)
-fhat_densolog <- fhat2plot[,5]
+fhat_malc <- fhat2plot[,5]
 
 # Res 
 hobj <- hist(x, breaks = grid, plot = FALSE)
@@ -946,7 +946,7 @@ fhat_ks <- approx(fit$x, fit$y, xout = eval_grid, rule = 2)$y
 
 # Plot 
 
-grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/DensOLog_ChiSqr_1000.pdf",width = 4, height = 4)
+grDevices::pdf("/Users/furkandanisman/Desktop/RA_Documents/RA-DOCUMENTS/MALC_ChiSqr_1000.pdf",width = 4, height = 4)
 #par(bg='white', mar = c(4, 5, 4, 1), xpd=T,cex=6,bty="l",
 #    font.lab=1,mfrow=c(1,1),cex.lab=3,cex.axis=3,
 #    font.axis=1,cex.main=3)
@@ -958,7 +958,7 @@ plot(function(x) dchisq(x,df), xlim=c(0,10),
 abline(v=grid, col=gray(0.9), lty=2, lwd=0.5)
 
 # Overlay estimated densities on their own x grids
-lines(eval_grid,fhat_densolog,col = "blue",lwd = 1.5)
+lines(eval_grid,fhat_malc,col = "blue",lwd = 1.5)
 lines(x_res,fhat_res,col = "green",lwd = 1.5)
 lines(eval_grid,fhat_ndpe,col = "red",lwd = 1.5)
 lines(x_ks,fhat_ks,col = "purple",lwd = 1.5)
