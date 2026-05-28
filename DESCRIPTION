@@ -4,10 +4,10 @@ Title: Density Estimation from Ordered Log-Concave Discrete Data
 Version: 0.1.0
 Authors@R: c(
     person("Furkan", "Danisman", role = c("aut", "cre"),
-           email = "furkandanisman@example.com")
+           email = "furkan.danisman@mail.utoronto.ca")
     )
 Author: Furkan Danisman [aut, cre]
-Maintainer: Furkan Danisman <furkandanisman@example.com>
+Maintainer: Furkan Danisman <furkan.danisman@mail.utoronto.ca>
 Description: Implements MALC density estimation from observed frequencies
     on a grid, together with comparison methods used in the accompanying
     simulation study: BK2002, BinnedNP, and KernSmooth.
