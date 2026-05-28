@@ -25,7 +25,7 @@ Plot_Kernel(object, eval_grid = NULL, add = FALSE, xlab = "x",
 \item{bw_B, bw_seed, bw_method}{Bandwidth-selection controls for BK2002.}
 \item{max_iter, tol_L1, verbose}{Fixed-point iteration controls for BK2002.}
 \item{bandwidth}{BinnedNP bandwidth choice stored in the fitted object.}
-\item{seed_start, max_tries}{Bandwidth retry controls for BinnedNP.}
+\item{seed_start, max_tries}{Controls for BinnedNP-compatible bandwidth selection.}
 \item{seed, scalest, level, kernel, canonical, truncate}{Controls passed to KernSmooth bandwidth and density routines.}
 \item{object}{A fitted comparison-method object.}
 \item{eval_grid}{Optional grid used for plotting the fitted density.}
@@ -35,10 +35,26 @@ Plot_Kernel(object, eval_grid = NULL, add = FALSE, xlab = "x",
 \description{
 Fit the three baseline estimators used in the MALC simulation study:
 BK2002, BinnedNP, and KernSmooth. All methods use observed frequencies and
-grid breaks as inputs. \code{Plot_Kernel()} plots any fitted comparison-method
-object.
+grid breaks as inputs. The CRAN version implements \code{BinnedNP()} without
+depending on the archived \pkg{binnednp} package. \code{Plot_Kernel()} plots
+any fitted comparison-method object.
 }
 \value{
 Fitting functions return method-specific fitted objects. \code{Plot_Kernel()}
 returns invisibly a data frame with the plotted grid and density values.
+}
+\examples{
+counts <- c(1, 3, 5, 3, 1)
+grid <- seq(-2.5, 2.5, length.out = length(counts) + 1)
+eval_grid <- seq(-2.5, 2.5, length.out = 25)
+
+bk <- BK2002(counts, grid, bw_B = 2, max_iter = 2)
+bn <- BinnedNP(counts, grid, max_tries = 2)
+ks <- KernSmooth(counts, grid)
+
+Eval(bk, dnorm, length_grid = 101)
+Eval(bn, dnorm, length_grid = 101)
+Eval(ks, dnorm, length_grid = 101)
+
+Plot_Kernel(bk, eval_grid = eval_grid)
 }

@@ -132,27 +132,30 @@ BinnedNP <- function(counts, grid, bandwidth = c("boot", "plugin"),
   counts <- as.integer(round(counts))
   n <- sum(counts)
   w <- counts / n
-
-  bw <- NULL
-  for (k in 0:(max_tries - 1L)) {
-    old_seed <- .restore_seed(seed_start + k)
-    bw_try <- tryCatch(
-      binnednp::bw.dens.binned(
-        n = n, y = grid, w = w, ni = counts,
-        plot = FALSE, print = FALSE
-      ),
-      error = function(e) NULL
+  mids <- .left_centers(grid)
+  sigma_hat <- sqrt(sum(w * (mids - sum(w * mids))^2))
+  if (!is.finite(sigma_hat) || sigma_hat <= 0) {
+    sigma_hat <- stats::sd(
+      simulate_pseudodata_uniform_in_bins(counts, grid, seed = seed_start)
     )
-    .on_exit_restore_seed(old_seed)
-    if (!is.null(bw_try) &&
-        is.finite(bw_try$h_boot) && bw_try$h_boot > 0 &&
-        is.finite(bw_try$h_plugin) && bw_try$h_plugin > 0) {
-      bw <- bw_try
-      break
-    }
   }
-  if (is.null(bw)) {
-    stop("bw.dens.binned failed after max_tries.", call. = FALSE)
+  h_plugin <- 1.06 * sigma_hat * n^(-1 / 5)
+  h_boot <- bw_SJ_from_binned(
+    counts,
+    grid,
+    B = max(1L, min(as.integer(max_tries), 50L)),
+    seed = seed_start,
+    bw_method = "ste"
+  )
+  if (!is.finite(h_plugin) || h_plugin <= 0) {
+    h_plugin <- h_boot
+  }
+  if (!is.finite(h_boot) || h_boot <= 0) {
+    h_boot <- h_plugin
+  }
+  if (!is.finite(h_plugin) || !is.finite(h_boot) ||
+      h_plugin <= 0 || h_boot <= 0) {
+    stop("BinnedNP bandwidth selection failed.", call. = FALSE)
   }
 
   structure(
@@ -160,8 +163,8 @@ BinnedNP <- function(counts, grid, bandwidth = c("boot", "plugin"),
       counts = counts,
       grid = grid,
       weights = w,
-      mids = .left_centers(grid),
-      bw = bw,
+      mids = mids,
+      bw = list(h_boot = h_boot, h_plugin = h_plugin),
       bandwidth = bandwidth
     ),
     class = "BinnedNP"

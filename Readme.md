@@ -109,7 +109,7 @@ Eval(ks, true_pdf)
 
 ## What’s in this repo
 
-1. MALC and three baseline (KernSmooth, binnednp, NKDEBD) algorithms.
+1. MALC and three baseline (KernSmooth, BinnedNP-compatible, BK2002) algorithms.
 2. Simulation codes and results to compare methods.
 3. Code to compare methods visually.
 4. Application of MALC on real data and synthetic data. 
@@ -145,13 +145,13 @@ We use functions from the **KernSmooth** R package, which implements kernel smoo
 
 ---
 
-### 2) `binnednp` (kernel estimation for interval-grouped data)
-We use routines from the **binnednp** package, which provides kernel density / distribution estimation and bandwidth selection methods for **interval-grouped data**.
+### 2) `BinnedNP()` (kernel estimation for interval-grouped data)
+The package provides a CRAN-compatible `BinnedNP()` interface for kernel
+density estimation from interval-grouped data. The original simulation study
+was motivated by the **binnednp** methodology, but the CRAN package does not
+depend on the archived `binnednp` package.
 
-- Package: `binnednp`
 - Reference: Barreiro-Ures et al. (2019)
-
-> Note: `binnednp` has been archived/removed from CRAN in recent years; if installation is an issue, you can install from an archive snapshot or use the code paths in this repo that do not require it.
 
 ---
 

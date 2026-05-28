@@ -16,3 +16,9 @@ study convention. The fitted object supplies the density estimator; \code{pdf}
 supplies the target density.
 }
 \value{A numeric L2 error.}
+\examples{
+counts <- c(1, 3, 5, 3, 1)
+grid <- seq(-2.5, 2.5, length.out = length(counts) + 1)
+fit <- MALC(counts, grid, B = 200)
+Eval(fit, dnorm, length_grid = 101)
+}

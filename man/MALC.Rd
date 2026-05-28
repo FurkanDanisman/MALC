@@ -50,3 +50,15 @@ stored in the fitted object.
 Fit MALC from observed bin frequencies and evaluate density, distribution,
 quantile, EM-step mean, and plot methods.
 }
+\examples{
+counts <- c(1, 3, 5, 3, 1)
+grid <- seq(-2.5, 2.5, length.out = length(counts) + 1)
+fit <- MALC(counts, grid, B = 200)
+
+x <- seq(-2.5, 2.5, length.out = 25)
+dmalc(fit, x)
+pmalc(fit, c(-1, 0, 1), length_grid = 101)
+qmalc(fit, c(0.25, 0.5, 0.75), length_grid = 101)
+mean_malc(fit)
+Plot(fit, eval_grid = x)
+}

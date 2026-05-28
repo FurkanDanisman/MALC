@@ -3,6 +3,12 @@
 ^\.\.Rcheck$
 ^Algorithms$
 ^Application_Example$
+^CRAN-RELEASE$
+^cran-comments[.]md$
+^Manual$
+^MALC[.]Rcheck$
+^MALC_.*[.]tar[.]gz$
+^PAPER[.]tex$
 ^Plot_Comparison$
 ^Simulations$
 ^Readme[.]md$

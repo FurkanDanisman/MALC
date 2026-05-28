@@ -8,21 +8,19 @@ EMemp_counts <- function(counts, grid, sigma = 1, start = 0,
   pn <- counts / n
 
   mu_new <- start
-  mu_vec <- mu_new
 
   for (i in seq_len(max_step)) {
     mu_old <- mu_new
     alpha <- (grid - mu_old) / sigma
     temp <- (diff(G2(alpha)) + eps2) / (diff(G1(alpha)) + eps2)
     mu_new <- mu_old - sigma * sum(pn * temp)
-    mu_vec <- c(mu_new, mu_vec)
 
     if (abs(mu_new - mu_old) < eps1) {
       break
     }
   }
 
-  list(mu_hat = mu_new, mu_vec = mu_vec)
+  list(mu_hat = mu_new)
 }
 
 MALC <- function(counts, grid, smooth = FALSE, B = 10000, alpha = 2,
