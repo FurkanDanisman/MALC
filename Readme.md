@@ -11,7 +11,7 @@ The package is currently available from the GitHub development branch:
 
 ```r
 install.packages("remotes")
-remotes::install_github("FurkanDanisman/DensOLog", ref = "package-format")
+remotes::install_github("FurkanDanisman/MALC")
 ```
 
 After installation:
